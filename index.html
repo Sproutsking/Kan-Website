@@ -253,6 +253,20 @@
         .nav-cta::before {
             display: none !important;
         }
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100vw;
+            padding: clamp(1rem, 2vw, 1.2rem) clamp(1.5rem, 5vw, 5%);
+            backdrop-filter: blur(20px);
+            background: rgba(0, 0, 0, 0.85);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
 
         /* Mobile Menu Styles */
         @media (max-width: 768px) {
