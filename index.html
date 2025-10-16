@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Novarex - Kadena for Africa</title>
+    <title>Novarex - Kadena African Network</title>
     <style>
-        * {
+       * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -15,26 +15,35 @@
             --bg-color: #000000;
             --text-color: #ffffff;
             --gradient: linear-gradient(45deg, #ff6f61, #6b5b95);
+            --gradient-hover: linear-gradient(45deg, #6b5b95, #ff6f61);
             --card-bg: rgba(107, 91, 149, 0.05);
             --border-color: rgba(107, 91, 149, 0.2);
+            --accent-1: #ff6f61;
+            --accent-2: #6b5b95;
+            --glass-bg: rgba(255, 255, 255, 0.05);
         }
 
         [data-theme="light"] {
             --bg-color: #ffffff;
             --text-color: #1a1a1a;
             --gradient: linear-gradient(45deg, #ff6f61, #40c4ff);
+            --gradient-hover: linear-gradient(45deg, #40c4ff, #ff6f61);
             --card-bg: rgba(64, 196, 255, 0.05);
             --border-color: rgba(64, 196, 255, 0.2);
+            --accent-1: #40c4ff;
+            --accent-2: #ff6f61;
+            --glass-bg: rgba(0, 0, 0, 0.05);
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background: var(--bg-color);
             color: var(--text-color);
             overflow-x: hidden;
             position: relative;
             transition: background 0.3s ease, color 0.3s ease;
             font-size: clamp(16px, 2.5vw, 18px);
+            line-height: 1.6;
         }
 
         /* Animated Background */
@@ -45,7 +54,7 @@
             width: 100%;
             height: 100%;
             z-index: -2;
-            background: radial-gradient(ellipse at center, var(--border-color) 0%, rgba(0, 0, 0, 0.8) 50%);
+            background: radial-gradient(ellipse at center, var(--border-color) 0%, rgba(0, 0, 0, 0.9) 50%, rgba(0, 0, 0, 1) 100%);
         }
 
         .bg-grid {
@@ -60,6 +69,7 @@
             background-size: 40px 40px;
             animation: gridMove 15s linear infinite;
             will-change: transform;
+            opacity: 0.5;
         }
 
         @keyframes gridMove {
@@ -67,16 +77,26 @@
             100% { transform: translate(40px, 40px); }
         }
 
-        /* Navigation */
+        /* Enhanced Navigation */
         nav {
             position: fixed;
             top: 0;
             width: 100%;
-            padding: clamp(0.8rem, 2vw, 1rem) 5%;
-            backdrop-filter: blur(15px);
-            background: rgba(0, 0, 0, 0.9);
+            padding: clamp(1rem, 2vw, 1.2rem) 5%;
+            backdrop-filter: blur(20px);
+            background: rgba(0, 0, 0, 0.85);
             border-bottom: 1px solid var(--border-color);
             z-index: 1000;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        nav.scrolled {
+            backdrop-filter: blur(25px);
+            background: rgba(0, 0, 0, 0.95);
+            border-bottom: 2px solid var(--accent-1);
+            padding: clamp(0.7rem, 1.5vw, 0.9rem) 5%;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
         }
 
         .nav-container {
@@ -88,150 +108,559 @@
         }
 
         .logo {
-            font-size: clamp(1.5rem, 4vw, 1.8rem);
+            font-size: clamp(1.6rem, 4vw, 2.2rem);
             font-weight: 900;
             background: var(--gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
+            transition: transform 0.3s ease, filter 0.3s ease;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            line-height: 1.2;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            filter: brightness(1.3) drop-shadow(0 0 10px rgba(255, 111, 97, 0.5));
+        }
+
+        .logo-subtitle {
+            font-size: clamp(0.65rem, 1.5vw, 0.8rem);
+            color: var(--text-color);
+            opacity: 0.75;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: -2px;
+            display: block;
+            background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .hamburger {
             display: none;
-            font-size: clamp(1.5rem, 4vw, 1.8rem);
+            font-size: clamp(1.8rem, 4.5vw, 2rem);
             cursor: pointer;
             color: var(--text-color);
             padding: 0.5rem;
+            transition: all 0.3s ease;
+            z-index: 1002;
+            position: relative;
+            width: 35px;
+            height: 35px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hamburger-icon {
+            position: relative;
+            width: 28px;
+            height: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .hamburger-icon span {
+            display: block;
+            width: 100%;
+            height: 3px;
+            background: var(--text-color);
+            border-radius: 2px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .hamburger.active .hamburger-icon span:nth-child(1) {
+            transform: translateY(8.5px) rotate(45deg);
+            background: var(--accent-1);
+        }
+
+        .hamburger.active .hamburger-icon span:nth-child(2) {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        .hamburger.active .hamburger-icon span:nth-child(3) {
+            transform: translateY(-8.5px) rotate(-45deg);
+            background: var(--accent-1);
         }
 
         .nav-links {
             display: flex;
             list-style: none;
-            gap: clamp(1rem, 2vw, 1.5rem);
+            gap: clamp(0.8rem, 2vw, 1.5rem);
+            align-items: center;
             flex-wrap: wrap;
         }
 
         .nav-links a, .nav-links button {
-            color: rgba(255, 255, 255, 0.8);
+            color: var(--text-color);
             text-decoration: none;
-            font-size: clamp(0.9rem, 2.5vw, 1rem);
-            padding: 0.5rem;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+            padding: clamp(0.6rem, 1.5vw, 0.8rem) clamp(1rem, 2vw, 1.2rem);
+            border-radius: 12px;
             transition: all 0.3s ease;
-            touch-action: manipulation;
+            position: relative;
+            font-weight: 500;
+            overflow: hidden;
+            border: 1px solid transparent;
+            background: transparent;
+            min-width: fit-content;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .nav-links a::before, .nav-links button::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::before, .nav-links button:hover::before {
+            width: 100%;
         }
 
         .nav-links a:hover, .nav-links button:hover {
-            color: #ffffff;
-            text-shadow: 0 0 8px rgba(107, 91, 149, 0.5);
+            color: var(--accent-1);
+            transform: translateY(-2px);
         }
 
+        .nav-cta {
+            background: var(--gradient) !important;
+            padding: clamp(0.7rem, 1.5vw, 0.9rem) clamp(1.5rem, 2.5vw, 2rem) !important;
+            border-radius: 50px !important;
+            font-weight: 700;
+            border: none !important;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 111, 97, 0.3);
+            min-width: fit-content;
+            color: white !important;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-3px) !important;
+            box-shadow: 0 8px 25px rgba(255, 111, 97, 0.5);
+        }
+
+        .nav-cta::before {
+            display: none !important;
+        }
+
+        /* Mobile Menu Styles */
         @media (max-width: 768px) {
-            .hamburger {
-                display: block;
+            .nav-container {
+                flex-wrap: nowrap;
+                justify-content: space-between;
             }
+
+            .hamburger {
+                display: flex;
+            }
+
             .nav-links {
                 display: none;
                 flex-direction: column;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                width: 100%;
-                background: rgba(0, 0, 0, 0.95);
-                padding: 1rem;
+                position: fixed;
+                top: 0;
+                right: 0;
+                width: 85%;
+                max-width: 350px;
+                height: 100vh;
+                background: linear-gradient(135deg, rgba(0, 0, 0, 0.98), rgba(107, 91, 149, 0.4));
+                backdrop-filter: blur(30px);
+                padding: 6rem 2rem 2rem;
                 z-index: 999;
+                gap: 0;
+                transform: translateX(100%);
+                transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                align-items: stretch;
+                justify-content: flex-start;
+                overflow-y: auto;
+                border-left: 2px solid var(--border-color);
+                box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
             }
+
             .nav-links.active {
                 display: flex;
+                transform: translateX(0);
             }
+
+            .nav-links li {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+
             .nav-links a, .nav-links button {
-                padding: 1rem;
-                font-size: clamp(1rem, 3vw, 1.2rem);
+                padding: 1rem 1.5rem;
+                font-size: 1.05rem;
+                border-radius: 12px;
+                width: 100%;
+                text-align: left;
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid var(--border-color);
+                backdrop-filter: blur(10px);
+                transition: all 0.3s ease;
+                position: relative;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+                display: block;
+            }
+
+            .nav-links a::before, .nav-links button::before {
+                content: '→';
+                position: absolute;
+                right: 1.5rem;
+                bottom: auto;
+                top: 50%;
+                transform: translateY(-50%);
+                opacity: 0;
+                transition: all 0.3s ease;
+                width: auto;
+                height: auto;
+                background: none;
+                font-size: 1.2em;
+                color: var(--accent-1);
+            }
+
+            .nav-links a:hover::before, .nav-links button:hover::before {
+                opacity: 1;
+                right: 1rem;
+                width: auto;
+            }
+
+            .nav-links a:hover, .nav-links button:hover {
+                transform: translateX(5px);
+                border-color: var(--accent-1);
+                background: linear-gradient(90deg, rgba(255, 111, 97, 0.2), rgba(107, 91, 149, 0.2));
+            }
+
+            .nav-cta {
+                margin-top: 1rem !important;
+                padding: 1.2rem 1.5rem !important;
+                background: var(--gradient) !important;
+                border: none !important;
+                font-size: 1.1rem !important;
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4) !important;
+                border-radius: 50px !important;
+                text-align: center !important;
+            }
+
+            .nav-cta:hover {
+                transform: translateY(-3px) !important;
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5) !important;
+            }
+
+            .nav-cta::before {
+                display: none !important;
+            }
+
+            body::before {
+                content: '';
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.7);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.4s ease;
+                z-index: 998;
+            }
+
+            body.menu-open::before {
+                opacity: 1;
+                visibility: visible;
+            }
+
+            body.menu-open {
+                overflow: hidden;
+            }
+        }
+
+        nav .nav-links a.active {
+            color: var(--accent-1);
+            font-weight: 700;
+        }
+
+        /* Pop-up Styling */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(107, 91, 149, 0.2));
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--border-color);
+            border-radius: 24px;
+            padding: clamp(2rem, 4vw, 2.5rem);
+            max-width: 90%;
+            width: 450px;
+            text-align: center;
+            z-index: 2000;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .popup.show {
+            display: block;
+        }
+
+        .popup-content h3 {
+            font-size: clamp(1.5rem, 3vw, 1.8rem);
+            margin-bottom: 1.2rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+        }
+
+        .popup-content p {
+            font-size: clamp(1rem, 2.5vw, 1.1rem);
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .popup-close {
+            padding: clamp(0.8rem, 1.5vw, 1rem) clamp(1.5rem, 2.5vw, 2rem);
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: clamp(0.95rem, 2vw, 1.05rem);
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 111, 97, 0.3);
+        }
+
+        .popup-close:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(255, 111, 97, 0.5);
+        }
+
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1500;
+        }
+
+        .popup-overlay.show {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { 
+                opacity: 0; 
+                transform: translate(-50%, -60%) scale(0.9); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translate(-50%, -50%) scale(1); 
             }
         }
 
         /* Hero Section */
         .hero {
-            min-height: clamp(80vh, 100vw, 100vh);
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             position: relative;
             z-index: 2;
-            padding: clamp(1rem, 5vw, 2rem);
+            padding: clamp(10rem, 15vw, 12rem) clamp(1.5rem, 5vw, 3rem) clamp(3rem, 6vw, 4rem);
+            background: radial-gradient(ellipse at center, rgba(255, 111, 97, 0.08) 0%, transparent 60%);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(107, 91, 149, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(80px);
+            animation: heroGlow 8s ease-in-out infinite alternate;
+            z-index: -1;
+        }
+
+        @keyframes heroGlow {
+            0% {
+                transform: translateX(-50%) scale(1);
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateX(-50%) scale(1.3);
+                opacity: 0.8;
+            }
         }
 
         .hero-content {
-            max-width: 900px;
+            max-width: 1100px;
             width: 100%;
+            padding: 0 clamp(1rem, 3vw, 2rem);
+            animation: heroFadeIn 1.2s ease-out;
+        }
+
+        @keyframes heroFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .hero h1 {
-            font-size: clamp(2rem, 8vw, 4rem);
-            margin-bottom: clamp(1rem, 3vw, 1.5rem);
+            font-size: clamp(3rem, 10vw, 6rem);
+            margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
             font-weight: 900;
             background: var(--gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+            background-clip: text;
+            letter-spacing: -3px;
+            line-height: 1;
+            animation: titleGlow 4s ease-in-out infinite alternate;
+            text-shadow: 0 0 80px rgba(255, 111, 97, 0.3);
+        }
+
+        @keyframes titleGlow {
+            from {
+                filter: drop-shadow(0 0 30px rgba(255, 111, 97, 0.4));
+            }
+            to {
+                filter: drop-shadow(0 0 60px rgba(107, 91, 149, 0.6));
+            }
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 0.7rem 1.8rem;
+            background: linear-gradient(135deg, rgba(255, 111, 97, 0.15), rgba(107, 91, 149, 0.15));
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            font-size: clamp(0.8rem, 2vw, 0.95rem);
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 2.5rem;
+            backdrop-filter: blur(10px);
+            animation: badgePulse 3s ease-in-out infinite;
+            box-shadow: 0 4px 20px rgba(255, 111, 97, 0.2);
+        }
+
+        @keyframes badgePulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 4px 20px rgba(255, 111, 97, 0.2);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 6px 30px rgba(255, 111, 97, 0.4);
+            }
         }
 
         .hero-subtitle {
-            font-size: clamp(1rem, 3vw, 1.4rem);
-            margin-bottom: clamp(1.5rem, 4vw, 2rem);
-            line-height: 1.6;
-            opacity: 0.9;
+            font-size: clamp(1.15rem, 3.2vw, 1.5rem);
+            margin-bottom: clamp(2.5rem, 6vw, 3.5rem);
+            line-height: 1.8;
+            opacity: 0.95;
+            max-width: 850px;
+            margin-left: auto;
+            margin-right: auto;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.9);
         }
 
         .cta-container {
             display: flex;
-            gap: clamp(0.8rem, 2vw, 1rem);
+            gap: clamp(1rem, 2.5vw, 1.5rem);
             justify-content: center;
             flex-wrap: wrap;
+            margin-top: 3rem;
         }
 
         .cta-button {
-            padding: clamp(0.8rem, 2vw, 1rem) clamp(1.5rem, 3vw, 2rem);
+            padding: clamp(1rem, 2.2vw, 1.3rem) clamp(2rem, 3.5vw, 3rem);
             background: var(--gradient);
             color: white;
             text-decoration: none;
-            border-radius: 25px;
-            font-weight: 600;
-            font-size: clamp(0.9rem, 2.5vw, 1rem);
-            transition: all 0.3s ease;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: clamp(1rem, 2.3vw, 1.15rem);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             border: 2px solid transparent;
             touch-action: manipulation;
-            min-width: 120px;
+            min-width: 180px;
+            text-align: center;
+            box-shadow: 0 8px 30px rgba(255, 111, 97, 0.4);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+            z-index: -1;
+        }
+
+        .cta-button:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
         .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 16px rgba(107, 91, 149, 0.3);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(255, 111, 97, 0.6);
         }
 
         .cta-secondary {
             background: transparent;
             border: 2px solid var(--border-color);
+            box-shadow: 0 8px 30px rgba(107, 91, 149, 0.3);
         }
 
-        @media (max-width: 768px) {
-            .hero {
-                padding: 1rem;
-                min-height: 80vh;
-            }
-            .cta-container {
-                flex-direction: column;
-                align-items: center;
-            }
-            .cta-button {
-                width: 100%;
-                max-width: 300px;
-                text-align: center;
-            }
+        .cta-secondary:hover {
+            border-color: var(--accent-1);
+            background: rgba(107, 91, 149, 0.15);
+            box-shadow: 0 15px 40px rgba(107, 91, 149, 0.5);
         }
 
         /* Sections */
         section {
-            padding: clamp(4rem, 10vw, 6rem) clamp(3%, 5vw, 5%);
+            padding: clamp(4rem, 10vw, 6rem) clamp(5%, 6vw, 7%);
             max-width: 1400px;
             margin: 0 auto;
             position: relative;
@@ -239,299 +668,669 @@
         }
 
         .section-title {
-            font-size: clamp(1.8rem, 5vw, 2.5rem);
-            margin-bottom: clamp(1.5rem, 4vw, 2rem);
+            font-size: clamp(2rem, 5vw, 2.8rem);
+            margin-bottom: clamp(2rem, 4vw, 3rem);
             text-align: center;
-            font-weight: 800;
+            font-weight: 900;
             background: var(--gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+            background-clip: text;
+            letter-spacing: -1px;
+            position: relative;
+            display: inline-block;
+            width: 100%;
         }
 
-        /* About Section */
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--gradient);
+            border-radius: 2px;
+        }
+
+        /* Enhanced About Section */
         .about-content {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: clamp(2rem, 5vw, 3rem);
+            gap: clamp(3rem, 6vw, 4rem);
+            align-items: start;
+            margin-top: 3rem;
+        }
+
+        .about-text {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(1.5rem, 3vw, 2rem);
         }
 
         .about-text p {
-            font-size: clamp(0.9rem, 2.5vw, 1rem);
-            line-height: 1.7;
-            margin-bottom: 1rem;
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+            line-height: 1.85;
+            padding: clamp(1.5rem, 3vw, 2rem);
+            background: linear-gradient(135deg, var(--card-bg), rgba(107, 91, 149, 0.05));
+            backdrop-filter: blur(10px);
+            border: 1.5px solid var(--border-color);
+            border-radius: 16px;
+            opacity: 0.95;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .about-text p::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.5s ease;
+        }
+
+        .about-text p:hover::before {
+            transform: scaleX(1);
+        }
+
+        .about-text p:hover {
+            border-color: var(--accent-1);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(255, 111, 97, 0.15);
+            background: linear-gradient(135deg, rgba(107, 91, 149, 0.1), rgba(107, 91, 149, 0.08));
+        }
+
+        /* Mobile enhanced styling */
+        @media (max-width: 768px) {
+            .about-text p {
+                padding: clamp(1rem, 2.5vw, 1.5rem);
+                border-radius: 14px;
+                border-left: 4px solid var(--accent-1);
+                transition: all 0.3s ease;
+            }
+
+            .about-text p:hover {
+                border-left-width: 6px;
+                padding-left: calc(clamp(1rem, 2.5vw, 1.5rem) - 2px);
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+
+        /* Desktop specific styling */
+        @media (min-width: 769px) {
+            .about-text p::after {
+                content: '✦';
+                position: absolute;
+                left: 1rem;
+                top: 1rem;
+                width: auto;
+                height: auto;
+                background: none;
+                font-size: 1.2rem;
+                color: var(--accent-1);
+                opacity: 0;
+                transition: opacity 0.3s ease, transform 0.3s ease;
+                transform: scale(0.5);
+            }
+
+            .about-text p:hover::after {
+                opacity: 0.8;
+                transform: scale(1);
+                height: auto;
+            }
         }
 
         .stats-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(clamp(140px, 40vw, 150px), 1fr));
-            gap: clamp(1rem, 3vw, 1.5rem);
+            grid-template-columns: repeat(2, 1fr);
+            gap: clamp(1.2rem, 3vw, 1.8rem);
+            margin-top: 2rem;
         }
 
         .stat-card {
-            padding: clamp(1rem, 3vw, 1.5rem);
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
+            padding: clamp(1.5rem, 3.5vw, 2rem);
+            background: linear-gradient(135deg, var(--card-bg), rgba(107, 91, 149, 0.08));
+            backdrop-filter: blur(15px);
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
             text-align: center;
-            transition: all 0.3s ease;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient);
+            transform: scaleX(0);
+            transition: transform 0.5s ease;
+        }
+
+        .stat-card:hover::before {
+            transform: scaleX(1);
         }
 
         .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(107, 91, 149, 0.2);
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+            border-color: var(--accent-1);
         }
 
         .stat-number {
-            font-size: clamp(1.5rem, 4vw, 2rem);
+            font-size: clamp(2rem, 5vw, 2.8rem);
+            font-weight: 900;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.8rem;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: clamp(0.9rem, 2.2vw, 1rem);
+            opacity: 0.85;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .feature-card {
+            padding: clamp(2rem, 4vw, 2.5rem);
+            background: linear-gradient(135deg, var(--card-bg), rgba(107, 91, 149, 0.08));
+            backdrop-filter: blur(15px);
+            border: 2px solid var(--border-color);
+            border-radius: 24px;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+            border-color: var(--accent-1);
+        }
+
+        .feature-icon {
+            width: clamp(60px, 12vw, 80px);
+            height: clamp(60px, 12vw, 80px);
+            background: var(--gradient);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: clamp(1.5rem, 3.5vw, 2rem);
+            box-shadow: 0 8px 20px rgba(255, 111, 97, 0.3);
+        }
+
+        .feature-card h3 {
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
+            margin-bottom: 1rem;
+            font-weight: 800;
+            color: var(--text-color);
+        }
+
+        .feature-card p {
+            font-size: clamp(0.95rem, 2.3vw, 1.05rem);
+            line-height: 1.7;
+            opacity: 0.9;
+        }
+
+        /* Ecosystem Grid */
+        .ecosystem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: clamp(2rem, 4vw, 2.5rem);
+        }
+
+        .ecosystem-card {
+            padding: clamp(2rem, 4vw, 2.5rem);
+            background: linear-gradient(135deg, var(--card-bg), rgba(107, 91, 149, 0.08));
+            backdrop-filter: blur(15px);
+            border: 2px solid var(--border-color);
+            border-radius: 24px;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .ecosystem-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gradient);
+            transform: scaleX(0);
+            transition: transform 0.5s ease;
+        }
+
+        .ecosystem-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .ecosystem-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+            border-color: var(--accent-1);
+        }
+
+        .ecosystem-icon {
+            font-size: clamp(2.5rem, 6vw, 3rem);
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .ecosystem-card h3 {
+            font-size: clamp(1.3rem, 3.5vw, 1.7rem);
+            margin-bottom: 1rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .ecosystem-card p {
+            font-size: clamp(0.9rem, 2.2vw, 1rem);
+            line-height: 1.7;
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+        }
+
+        .ecosystem-features {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .ecosystem-features li {
+            font-size: clamp(0.85rem, 2.2vw, 0.95rem);
+            margin-bottom: 0.6rem;
+            padding: 0.6rem 0.8rem 0.6rem 1.8rem;
+            background: var(--glass-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            backdrop-filter: blur(5px);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .ecosystem-features li::before {
+            content: '→';
+            position: absolute;
+            left: 8px;
+            color: var(--accent-1);
+            font-weight: bold;
+        }
+
+        .ecosystem-features li:hover {
+            border-color: var(--accent-1);
+            background: rgba(255, 111, 97, 0.1);
+            transform: translateX(4px);
+        }
+
+        .ecosystem-cta {
+            width: 100%;
+            padding: clamp(0.9rem, 2vw, 1.1rem) clamp(1.2rem, 2.5vw, 1.5rem);
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: clamp(0.9rem, 2.2vw, 1rem);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(255, 111, 97, 0.3);
+        }
+
+        .ecosystem-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 111, 97, 0.5);
+        }
+
+        /* Team Section */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: clamp(2rem, 4vw, 2.5rem);
+        }
+
+        .team-card {
+            padding: 0;
+            background: linear-gradient(135deg, var(--card-bg), rgba(107, 91, 149, 0.05));
+            backdrop-filter: blur(15px);
+            border: 2px solid var(--border-color);
+            border-radius: 24px;
+            text-align: center;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .team-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 120px;
+            background: var(--gradient);
+            opacity: 0.8;
+            transition: all 0.5s ease;
+        }
+
+        .team-card:hover::before {
+            height: 150px;
+            opacity: 1;
+        }
+
+        .team-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            border-color: var(--accent-1);
+        }
+
+        .team-card-header {
+            position: relative;
+            padding: 2rem 1.5rem 1rem;
+            z-index: 1;
+        }
+
+        .team-avatar {
+            width: clamp(100px, 22vw, 130px);
+            height: clamp(100px, 22vw, 130px);
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85));
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(2rem, 5vw, 2.5rem);
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 0 0 8px rgba(255, 255, 255, 0.1);
+            transition: all 0.5s ease;
+            color: #ff6f61;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .team-card:hover .team-avatar {
+            transform: scale(1.1) rotateZ(5deg);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4), 0 0 0 12px rgba(255, 255, 255, 0.2);
+        }
+
+        .team-card-body {
+            padding: 1.5rem;
+            background: var(--card-bg);
+            position: relative;
+            z-index: 1;
+        }
+
+        .team-card h3 {
+            font-size: clamp(1.3rem, 3vw, 1.6rem);
+            margin-bottom: 0.3rem;
+            font-weight: 800;
+            color: var(--text-color);
+        }
+
+        .team-role {
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            color: var(--accent-1);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .team-card p:not(.team-role) {
+            font-size: clamp(0.9rem, 2.2vw, 0.95rem);
+            line-height: 1.6;
+            opacity: 0.85;
+            margin-bottom: 1.5rem;
+        }
+
+        .team-x-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            padding: clamp(0.7rem, 1.8vw, 0.9rem) clamp(1.5rem, 3vw, 2rem);
+            background: var(--gradient);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: clamp(0.85rem, 2vw, 0.95rem);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border: none;
+            cursor: pointer;
+        }
+
+        .team-x-button::before {
+            content: '𝕏';
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .team-x-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(45deg, #6b5b95, #ff6f61);
+        }
+
+        /* Roadmap Section */
+        .roadmap-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: clamp(1.5rem, 3vw, 2rem);
+        }
+
+        .roadmap-card {
+            padding: clamp(1.5rem, 3vw, 2rem);
+            background: linear-gradient(135deg, var(--card-bg), rgba(107, 91, 149, 0.08));
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .roadmap-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .roadmap-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .roadmap-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            border-color: var(--accent-1);
+        }
+
+        .roadmap-card h3 {
+            font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+            margin-bottom: 0.8rem;
             font-weight: 700;
             background: var(--gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .stat-label {
-            font-size: clamp(0.8rem, 2vw, 0.9rem);
-            opacity: 0.8;
-        }
-
-        .feature-card {
-            padding: clamp(1.5rem, 3vw, 2rem);
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            transition: all 0.3s ease;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(107, 91, 149, 0.2);
-        }
-
-        .feature-icon {
-            width: clamp(50px, 10vw, 60px);
-            height: clamp(50px, 10vw, 60px);
-            background: var(--gradient);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1rem;
-            font-size: clamp(1.2rem, 3vw, 1.5rem);
-        }
-
-        .chainweb-visualization {
-            height: clamp(200px, 50vw, 300px);
-            width: 100%;
-        }
-
-        @media (max-width: 768px) {
-            .about-content {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-            .chainweb-visualization {
-                height: 200px;
-            }
-        }
-
-        /* Ecosystem Section */
-        .ecosystem-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(clamp(250px, 45vw, 280px), 1fr));
-            gap: clamp(1.5rem, 3vw, 2rem);
-        }
-
-        .ecosystem-card {
-            padding: clamp(1.5rem, 3vw, 2rem);
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            text-align: center;
-            transition: all 0.3s ease;
-            touch-action: manipulation;
-        }
-
-        .ecosystem-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(107, 91, 149, 0.2);
-        }
-
-        .ecosystem-icon {
-            width: clamp(60px, 15vw, 80px);
-            height: clamp(60px, 15vw, 80px);
-            margin: 0 auto 1rem;
-            background: var(--gradient);
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: clamp(1.5rem, 4vw, 2rem);
-        }
-
-        .nft-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(clamp(120px, 30vw, 150px), 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .nft-card img {
-            max-width: 100%;
-            border-radius: 8px;
-        }
-
-        @media (max-width: 768px) {
-            .ecosystem-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Team Section */
-        .team-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(clamp(250px, 45vw, 280px), 1fr));
-            gap: clamp(1.5rem, 3vw, 2rem);
-        }
-
-        .team-card {
-            padding: clamp(1.5rem, 3vw, 2rem);
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .team-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(107, 91, 149, 0.2);
-        }
-
-        .team-avatar {
-            width: clamp(80px, 20vw, 100px);
-            height: clamp(80px, 20vw, 100px);
-            border-radius: 50%;
-            background: var(--gradient);
-            margin: 0 auto 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: clamp(1.5rem, 4vw, 2rem);
-        }
-
-        @media (max-width: 768px) {
-            .team-grid {
-                grid-template-columns: 1fr;
-            }
+        .roadmap-card p {
+            font-size: clamp(0.9rem, 2.2vw, 1rem);
+            line-height: 1.6;
+            opacity: 0.9;
         }
 
         /* Footer */
         footer {
-            background: rgba(0, 0, 0, 0.9);
-            padding: clamp(3rem, 8vw, 4rem) 5% 2rem;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(107, 91, 149, 0.1));
+            padding: clamp(3rem, 8vw, 5rem) 5% 1.5rem;
             border-top: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
         }
 
         .footer-content {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(clamp(180px, 40vw, 200px), 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: clamp(1.5rem, 3vw, 2rem);
             max-width: 1400px;
             margin: 0 auto;
+        }
+
+        .footer-section h3 {
+            color: var(--text-color);
+            margin-bottom: 1.2rem;
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            font-weight: 700;
         }
 
         .footer-section a {
             color: rgba(255, 255, 255, 0.7);
             text-decoration: none;
             display: block;
-            margin-bottom: 0.5rem;
-            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            margin-bottom: 0.6rem;
+            font-size: clamp(0.9rem, 2.2vw, 0.95rem);
+            transition: all 0.3s ease;
+            padding: 0.2rem 0;
         }
 
         .footer-section a:hover {
-            color: #ff6f61;
+            color: var(--accent-1);
+            transform: translateX(5px);
         }
 
         .footer-section select {
             background: var(--card-bg);
             color: var(--text-color);
             border: 1px solid var(--border-color);
-            padding: 0.5rem;
-            border-radius: 8px;
-            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            padding: 0.6rem;
+            border-radius: 12px;
+            font-size: clamp(0.9rem, 2.2vw, 0.95rem);
             width: 100%;
-            max-width: 200px;
+            max-width: 180px;
+            transition: all 0.3s ease;
+        }
+
+        .footer-section select:hover {
+            border-color: var(--accent-1);
+            box-shadow: 0 2px 8px rgba(255, 111, 97, 0.2);
         }
 
         .footer-bottom {
             text-align: center;
             margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
             font-size: clamp(0.8rem, 2vw, 0.9rem);
             color: rgba(255, 255, 255, 0.6);
         }
 
+        /* Responsive Design */
         @media (max-width: 768px) {
-            .footer-content {
+            .about-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .ecosystem-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .team-grid {
                 grid-template-columns: 1fr;
             }
-        }
 
-        /* Animations */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.6s ease;
-        }
+            .roadmap-grid {
+                grid-template-columns: 1fr;
+            }
 
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
+            section {
+                padding: clamp(2.5rem, 6vw, 4rem) 5%;
+            }
 
-        /* Accessibility */
-        @media (prefers-contrast: high) {
-            .hero h1, .section-title, .about-text p {
-                background: none;
-                -webkit-text-fill-color: var(--text-color);
-                text-shadow: none;
+            .popup {
+                width: 90%;
+                max-width: 320px;
+                padding: clamp(1rem, 3vw, 1.5rem);
+            }
+
+            .popup-content h3 {
+                font-size: clamp(1.1rem, 2.8vw, 1.3rem);
+            }
+
+            .popup-content p {
+                font-size: clamp(0.85rem, 2.2vw, 0.95rem);
+            }
+
+            .popup-close {
+                padding: clamp(0.5rem, 1.5vw, 0.7rem) clamp(1rem, 2vw, 1.2rem);
+                font-size: clamp(0.8rem, 2vw, 0.9rem);
             }
         }
 
-        @media (prefers-reduced-motion: reduce) {
-            .fade-in, .bg-grid, .cta-button {
-                transition: none;
-                animation: none;
+        @media (max-width: 480px) {
+            .stats-container {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
             }
-        }
 
-        /* Loading Screen */
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            transition: opacity 0.5s ease;
-        }
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
 
-        .loader {
-            width: clamp(30px, 8vw, 40px);
-            height: clamp(30px, 8vw, 40px);
-            border: 3px solid var(--border-color);
-            border-top: 3px solid #ff6f61;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
+            .section-title {
+                font-size: clamp(1.4rem, 4vw, 1.8rem);
+            }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            .team-avatar {
+                width: clamp(80px, 18vw, 100px);
+                height: clamp(80px, 18vw, 100px);
+                font-size: clamp(1.4rem, 3.5vw, 1.8rem);
+            }
         }
     </style>
 </head>
@@ -542,43 +1341,65 @@
         <div class="bg-grid"></div>
     </div>
 
-    <!-- Navigation -->
+    <!-- Pop-up Overlay -->
+    <div class="popup-overlay" id="popup-overlay"></div>
+
+    <!-- Pop-up for Coming Soon -->
+    <div class="popup" id="coming-soon-popup">
+        <div class="popup-content">
+            <h3 id="popup-title"></h3>
+            <p id="popup-message"></p>
+            <button class="popup-close" id="popup-close">Close</button>
+        </div>
+    </div>
+
+    <!-- Enhanced Navigation -->
     <nav role="navigation" aria-label="Main navigation">
         <div class="nav-container">
-            <div class="logo" aria-label="Novarex logo">Novarex</div>
-            <div class="hamburger" aria-label="Toggle menu">☰</div>
+            <div class="logo" aria-label="Novarex logo">
+                Novarex
+                <div class="logo-subtitle">Kadena African Network</div>
+            </div>
+            <div class="hamburger" aria-label="Toggle menu">
+                <div class="hamburger-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
             <ul class="nav-links" role="menu">
                 <li role="menuitem"><a href="#home" data-i18n="home">Home</a></li>
                 <li role="menuitem"><a href="#about" data-i18n="about">About</a></li>
                 <li role="menuitem"><a href="#ecosystem" data-i18n="ecosystem">Ecosystem</a></li>
+                <li role="menuitem"><a href="#roadmap" data-i18n="roadmap">Roadmap</a></li>
                 <li role="menuitem"><a href="#team" data-i18n="team_title">Team</a></li>
-                <li role="menuitem"><a href="#contact" data-i18n="contact">Contact</a></li>
-<!--                 <li role="menuitem"><button id="connect-wallet" class="cta-button" data-i18n="connect_wallet">Connect Wallet</button></li>
-                <li role="menuitem"><button id="theme-toggle" class="cta-button cta-secondary" data-i18n="toggle_theme">Toggle Theme</button></li> -->
+                <li role="menuitem"><button class="nav-cta" data-i18n="get_started">Get Started</button></li>
             </ul>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero fade-in">
+    <!-- Enhanced Hero Section -->
+    <section id="home" class="hero">
         <div class="hero-content">
-            <h1 data-i18n="hero_title">Novarex: Kadena for Africa</h1>
-            <p class="hero-subtitle" data-i18n="hero_subtitle">Empowering African finance with Kadena’s scalable blockchain, delivering secure DeFi, NFTs, and cross-chain solutions.</p>
+            <div class="hero-badge">🚀 Kadena African Network</div>
+            <h1 data-i18n="hero_title">Novarex</h1>
+            <p class="hero-subtitle" data-i18n="hero_subtitle">Revolutionizing Africa's financial landscape with Kadena's high-throughput blockchain, enabling secure DeFi, NFTs, and sustainable agricultural finance.</p>
             <div class="cta-container">
-                <a href="#about" class="cta-button" data-i18n="explore_platform">Explore Platform</a>
-                <a href="#ecosystem" class="cta-button cta-secondary" data-i18n="view_ecosystem">View Ecosystem</a>
+                <a href="#ecosystem" class="cta-button" data-i18n="explore_ecosystem">Explore Ecosystem</a>
+                <a href="https://axe-capital-1.gitbook.io/novarex/" class="cta-button cta-secondary" data-i18n="read_docs">Read Docs</a>
             </div>
         </div>
     </section>
 
-    <!-- About Section -->
+    <!-- Enhanced About Section -->
     <section id="about" class="fade-in">
         <h2 class="section-title" data-i18n="about_title">About Novarex</h2>
         <div class="about-content">
-            <div>
+            <div class="fade-in-left">
                 <div class="about-text">
-                    <p data-i18n="about_text1">Novarex builds on Kadena’s Chainweb, a Layer 1 PoW blockchain with 20 parallel chains, to bring scalable and secure solutions to Africa’s financial ecosystem.</p>
-                    <p data-i18n="about_text2">Using Pact’s human-readable smart contracts and Kadena’s gas stations, we enable low-cost, developer-friendly dApps for financial inclusion across Africa.</p>
+                    <p data-i18n="about_text1">Novarex leverages Kadena's Chainweb, a Layer 1 PoW blockchain with 20 parallel chains, delivering unparalleled scalability and security for Africa's financial ecosystem.</p>
+                    <p data-i18n="about_text2">With Pact's human-readable smart contracts and Kadena's gas stations, we empower developers to create cost-effective dApps that drive financial inclusion and economic growth across Africa.</p>
+                    <p data-i18n="about_text3">Our solutions are tailored for African markets, addressing challenges like high transaction costs and limited access to financial services with innovative blockchain technology.</p>
                 </div>
                 <div class="stats-container">
                     <div class="stat-card">
@@ -590,21 +1411,20 @@
                         <div class="stat-label" data-i18n="uptime">Uptime</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-number">$1B+</div>
+                        <div class="stat-number" data-i18n="just_starting">Just Starting</div>
                         <div class="stat-label" data-i18n="total_value_locked">Total Value Locked</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-number">50+</div>
+                        <div class="stat-number" data-i18n="building_now">Building Now</div>
                         <div class="stat-label" data-i18n="partners">African Partners</div>
                     </div>
                 </div>
             </div>
-            <div>
-                <div class="chainweb-visualization"></div>
+            <div class="fade-in-right">
                 <div class="feature-card">
                     <div class="feature-icon">⚡</div>
                     <h3 data-i18n="chainweb_scale">Chainweb Scalability</h3>
-                    <p data-i18n="chainweb_scale_desc">Up to 480,000 TPS with 20 parallel chains for Africa’s growing markets.</p>
+                    <p data-i18n="chainweb_scale_desc">Up to 480,000 TPS with 20 parallel chains for Africa's growing markets.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">📜</div>
@@ -615,83 +1435,162 @@
         </div>
     </section>
 
-    <!-- Ecosystem Section -->
+    <!-- Enhanced Ecosystem Section -->
     <section id="ecosystem" class="fade-in">
         <h2 class="section-title" data-i18n="ecosystem_title">Novarex Ecosystem</h2>
         <div class="ecosystem-grid">
+            <!-- Novarex Wallet -->
             <div class="ecosystem-card">
-                <div class="ecosystem-icon">💸</div>
-                <h3 data-i18n="defi_protocol">DeFi for Africa</h3>
-                <p data-i18n="defi_protocol_desc">Low-cost trading and lending with Kadena’s gas stations for African users.</p>
+                <span class="ecosystem-icon">💳</span>
+                <h3 data-i18n="wallet_title">Novarex Wallet</h3>
+                <p data-i18n="wallet_desc">A secure, user-friendly wallet built on Kadena, enabling seamless transactions and financial services for African users.</p>
+                <ul class="ecosystem-features">
+                    <li data-i18n="wallet_feature_1">Instant P2P Payments - Send and receive KDA with zero latency</li>
+                    <li data-i18n="wallet_feature_2">Token Swaps - Convert KDA to stablecoins and other assets</li>
+                    <li data-i18n="wallet_feature_3">Verified P2P Market - Secure trading with KYC-verified users</li>
+                    <li data-i18n="wallet_feature_4">Merchant Solutions - QR-based payments and POS integration</li>
+                    <li data-i18n="wallet_feature_5">Financial Access - Pay bills, buy airtime, and send remittances</li>
+                    <li data-i18n="wallet_feature_6">Multi-Signature Security - Enhanced protection for user funds</li>
+                </ul>
+                <button class="ecosystem-cta" data-i18n="launch_wallet" data-popup="wallet">Launch Wallet</button>
             </div>
+
+            <!-- Novarex Social -->
             <div class="ecosystem-card">
-                <div class="ecosystem-icon">🎨</div>
-                <h3 data-i18n="nft_marketplace">NFT Marketplace</h3>
-                <p data-i18n="nft_marketplace_desc">Mint and trade African-inspired NFTs on Kadena’s network.</p>
+                <span class="ecosystem-icon">🌐</span>
+                <h3 data-i18n="social_title">Novarex Social</h3>
+                <p data-i18n="social_desc">A vibrant social media hub on Kadena, fostering community engagement and rewarding participation across Africa.</p>
+                <ul class="ecosystem-features">
+                    <li data-i18n="social_feature_1">Social Network - Post, share, and earn KDA rewards</li>
+                    <li data-i18n="social_feature_2">Community Channels - Region-based groups for live chats</li>
+                    <li data-i18n="social_feature_3">Builder Spaces - Developer collaboration hubs</li>
+                    <li data-i18n="social_feature_4">Expert Connect - Collaborate with Kadena experts</li>
+                    <li data-i18n="social_feature_5">Project Showcase - Share hackathon ideas and projects</li>
+                    <li data-i18n="social_feature_6">Decentralized Identity - Secure, user-controlled profiles</li>
+                </ul>
+                <button class="ecosystem-cta" data-i18n="join_social" data-popup="social">Join Community</button>
             </div>
+
+            <!-- Novarex AgriFi -->
             <div class="ecosystem-card">
-                <div class="ecosystem-icon">🌍</div>
-                <h3 data-i18n="cross_chain_bridge">Cross-Chain Bridge</h3>
-                <p data-i18n="cross_chain_bridge_desc">Connect African markets with global blockchains via Kadena.</p>
+                <span class="ecosystem-icon">🌱</span>
+                <h3 data-i18n="agrifi_title">Novarex AgriFi</h3>
+                <p data-i18n="agrifi_desc">Empowering African farmers with blockchain-based financing, turning agriculture into a sustainable income stream for KDA holders.</p>
+                <ul class="ecosystem-features">
+                    <li data-i18n="agrifi_feature_1">Stake-to-Earn Pools - Stake KDA to fund farm cycles</li>
+                    <li data-i18n="agrifi_feature_2">Real Yield - Farmers repay in produce revenue</li>
+                    <li data-i18n="agrifi_feature_3">Cross-Chain Bridge - KDA ↔ IST liquidity flows</li>
+                    <li data-i18n="agrifi_feature_4">Partnership with Infinite Sprouts</li>
+                    <li data-i18n="agrifi_feature_5">Sustainable farming investment opportunities</li>
+                    <li data-i18n="agrifi_feature_6">Transparent Supply Chain - Track produce from farm to market</li>
+                </ul>
+                <button class="ecosystem-cta" data-i18n="explore_agrifi" data-popup="agrifi">Explore AgriFi</button>
             </div>
         </div>
     </section>
 
-    <!-- Team Section -->
+    <!-- Roadmap Section -->
+    <section id="roadmap" class="fade-in">
+        <h2 class="section-title" data-i18n="roadmap_title">Our Roadmap</h2>
+        <div class="roadmap-grid">
+            <div class="roadmap-card">
+                <h3 data-i18n="roadmap_phase1">Phase 1: Q1 2026</h3>
+                <p data-i18n="roadmap_phase1_desc">Launch Novarex Wallet with P2P payments and merchant tools.</p>
+            </div>
+            <div class="roadmap-card">
+                <h3 data-i18n="roadmap_phase2">Phase 2: Q3 2026</h3>
+                <p data-i18n="roadmap_phase2_desc">Introduce Novarex Social with KDA rewards and developer hubs.</p>
+            </div>
+            <div class="roadmap-card">
+                <h3 data-i18n="roadmap_phase3">Phase 3: Q1 2027</h3>
+                <p data-i18n="roadmap_phase3_desc">Expand AgriFi with cross-chain bridges and sustainable farming investments.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Enhanced Team Section -->
     <section id="team" class="fade-in">
         <h2 class="section-title" data-i18n="team_title">Meet Our Visionaries</h2>
         <div class="team-grid">
             <div class="team-card">
-                <div class="team-avatar">JD</div>
-                <h3 data-i18n="john_doe">John Doe</h3>
-                <p class="team-role" data-i18n="founder_ceo">Founder & CEO</p>
-                <p data-i18n="john_doe_desc">Blockchain expert with a passion for financial inclusion in Africa.</p>
+                <div class="team-card-header">
+                    <div class="team-avatar">SK</div>
+                </div>
+                <div class="team-card-body">
+                    <h3 data-i18n="sprouts_king">Sprouts King</h3>
+                    <p class="team-role" data-i18n="founder_ceo">Founder & CEO</p>
+                    <p data-i18n="sprouts_king_desc">Visionary entrepreneur driving financial inclusion in Africa, leading Novarex's mission to integrate Kadena's blockchain into agriculture and DeFi.</p>
+                    <a href="https://x.com/sproutsking" target="_blank" class="team-x-button">Follow on X</a>
+                </div>
             </div>
             <div class="team-card">
-                <div class="team-avatar">JA</div>
-                <h3 data-i18n="jane_ade">Jane Ade</h3>
-                <p class="team-role" data-i18n="cto">CTO</p>
-                <p data-i18n="jane_ade_desc">Expert in scalable blockchain solutions for African markets.</p>
+                <div class="team-card-header">
+                    <div class="team-avatar">BS</div>
+                </div>
+                <div class="team-card-body">
+                    <h3 data-i18n="blessing_sunday">Blessing Sunday</h3>
+                    <p class="team-role" data-i18n="secretary">Secretary</p>
+                    <p data-i18n="blessing_sunday_desc">B.Sc International Relations, forging global partnerships and building vibrant communities for Novarex's ecosystem.</p>
+                    <a href="https://x.com/blessingsunday" target="_blank" class="team-x-button">Follow on X</a>
+                </div>
+            </div>
+            <div class="team-card">
+                <div class="team-card-header">
+                    <div class="team-avatar">SJ</div>
+                </div>
+                <div class="team-card-body">
+                    <h3 data-i18n="stunner_jnr">Stunner Jnr</h3>
+                    <p class="team-role" data-i18n="coo">COO</p>
+                    <p data-i18n="stunner_jnr_desc">Expert in scalable business operations, driving Novarex's community and market expansion across African regions.</p>
+                    <a href="https://x.com/stunnerjnr" target="_blank" class="team-x-button">Follow on X</a>
+                </div>
+            </div>
+            <div class="team-card">
+                <div class="team-card-header">
+                    <div class="team-avatar">PT</div>
+                </div>
+                <div class="team-card-body">
+                    <h3 data-i18n="peterson">Peterson</h3>
+                    <p class="team-role" data-i18n="cto">CTO</p>
+                    <p data-i18n="peterson_desc">Architect of Novarex's blockchain infrastructure, delivering scalable and secure solutions for African markets.</p>
+                    <a href="https://x.com/peterson" target="_blank" class="team-x-button">Follow on X</a>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
+    <!-- Enhanced Footer -->
     <footer id="contact">
         <div class="footer-content">
             <div class="footer-section">
                 <h3 data-i18n="novarex">Novarex</h3>
-                <p data-i18n="footer_desc">Driving Kadena’s blockchain dominance in Africa’s financial future.</p>
+                <p data-i18n="footer_desc">Driving Kadena's blockchain dominance in Africa's financial future through innovation and community.</p>
             </div>
             <div class="footer-section">
                 <h3 data-i18n="platform">Platform</h3>
                 <a href="#home" data-i18n="home">Home</a>
                 <a href="#about" data-i18n="about">About</a>
                 <a href="#ecosystem" data-i18n="ecosystem">Ecosystem</a>
+                <a href="#roadmap" data-i18n="roadmap">Roadmap</a>
+                <a href="#team" data-i18n="team_title">Team</a>
             </div>
             <div class="footer-section">
                 <h3 data-i18n="resources">Resources</h3>
-                <a href="" target="_blank" data-i18n="documentation">Get Started</a>
-                <a href="https://kadena-project.gitbook.io/novarex/" target="_blank" data-i18n="whitepaper">Whitepaper</a>
+                <a href="https://axe-capital-1.gitbook.io/novarex/" target="_blank" data-i18n="documentation">Documentation</a>
+                <a href="https://axe-capital-1.gitbook.io/novarex/whitepaper" target="_blank" data-i18n="whitepaper">Whitepaper</a>
+                <a href="https://axe-capital-1.gitbook.io/novarex/roadmap" target="_blank" data-i18n="roadmap">Roadmap</a>
+                <a href="#contact" data-i18n="support">Support</a>
             </div>
             <div class="footer-section">
                 <h3 data-i18n="language">Language</h3>
                 <select id="language-selector">
                     <option value="en">English</option>
                     <option value="es">Español</option>
-                    <option value="zh">中文 (简体)</option>
-                    <option value="ja">日本語</option>
-                    <option value="ko">한국어</option>
-                    <option value="ru">Русский</option>
-                    <option value="pt">Português</option>
-                    <option value="hi">हिन्दी</option>
-                    <option value="vi">Tiếng Việt</option>
-                    <option value="fil">Filipino</option>
-                    <option value="tr">Türkçe</option>
-                    <option value="de">Deutsch</option>
                     <option value="fr">Français</option>
-                    <option value="id">Bahasa Indonesia</option>
-                    <option value="th">ไทย</option>
+                    <option value="pt">Português</option>
+                    <option value="ar">العربية</option>
+                    <option value="sw">Kiswahili</option>
+                    <option value="zh">中文</option>
                 </select>
             </div>
         </div>
@@ -701,21 +1600,226 @@
     </footer>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/web3@1.7.3/dist/web3.min.js"></script>
-    <script src="https://unpkg.com/i18next@21.6.14/dist/umd/i18next.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        // Hamburger Menu
-        document.querySelector('.hamburger').addEventListener('click', () => {
-            document.querySelector('.nav-links').classList.toggle('active');
+        // Translation Data
+        const translations = {
+            en: {
+                hero_title: "Novarex",
+                hero_subtitle: "Revolutionizing Africa's financial landscape with Kadena's high-throughput blockchain, enabling secure DeFi, NFTs, and sustainable agricultural finance.",
+                explore_ecosystem: "Explore Ecosystem",
+                read_docs: "Read Docs",
+                get_started: "Get Started",
+                about_title: "About Novarex",
+                about_text1: "Novarex leverages Kadena's Chainweb, a Layer 1 PoW blockchain with 20 parallel chains, delivering unparalleled scalability and security for Africa's financial ecosystem.",
+                about_text2: "With Pact's human-readable smart contracts and Kadena's gas stations, we empower developers to create cost-effective dApps that drive financial inclusion and economic growth across Africa.",
+                about_text3: "Our solutions are tailored for African markets, addressing challenges like high transaction costs and limited access to financial services with innovative blockchain technology.",
+                transactions_sec: "Transactions/Sec",
+                uptime: "Uptime",
+                just_starting: "Just Starting",
+                building_now: "Building Now",
+                total_value_locked: "Total Value Locked",
+                partners: "African Partners",
+                chainweb_scale: "Chainweb Scalability",
+                chainweb_scale_desc: "Up to 480,000 TPS with 20 parallel chains for Africa's growing markets.",
+                pact_secure: "Pact Smart Contracts",
+                pact_secure_desc: "Secure, human-readable coding for African developers.",
+                ecosystem_title: "Novarex Ecosystem",
+                wallet_title: "Novarex Wallet",
+                wallet_desc: "A secure, user-friendly wallet built on Kadena, enabling seamless transactions and financial services for African users.",
+                wallet_feature_1: "Instant P2P Payments - Send and receive KDA with zero latency",
+                wallet_feature_2: "Token Swaps - Convert KDA to stablecoins and other assets",
+                wallet_feature_3: "Verified P2P Market - Secure trading with KYC-verified users",
+                wallet_feature_4: "Merchant Solutions - QR-based payments and POS integration",
+                wallet_feature_5: "Financial Access - Pay bills, buy airtime, and send remittances",
+                wallet_feature_6: "Multi-Signature Security - Enhanced protection for user funds",
+                launch_wallet: "Launch Wallet",
+                social_title: "Novarex Social",
+                social_desc: "A vibrant social media hub on Kadena, fostering community engagement and rewarding participation across Africa.",
+                social_feature_1: "Social Network - Post, share, and earn KDA rewards",
+                social_feature_2: "Community Channels - Region-based groups for live chats",
+                social_feature_3: "Builder Spaces - Developer collaboration hubs",
+                social_feature_4: "Expert Connect - Collaborate with Kadena experts",
+                social_feature_5: "Project Showcase - Share hackathon ideas and projects",
+                social_feature_6: "Decentralized Identity - Secure, user-controlled profiles",
+                join_social: "Join Community",
+                agrifi_title: "Novarex AgriFi",
+                agrifi_desc: "Empowering African farmers with blockchain-based financing, turning agriculture into a sustainable income stream for KDA holders.",
+                agrifi_feature_1: "Stake-to-Earn Pools - Stake KDA to fund farm cycles",
+                agrifi_feature_2: "Real Yield - Farmers repay in produce revenue",
+                agrifi_feature_3: "Cross-Chain Bridge - KDA ↔ IST liquidity flows",
+                agrifi_feature_4: "Partnership with Infinite Sprouts",
+                agrifi_feature_5: "Sustainable farming investment opportunities",
+                agrifi_feature_6: "Transparent Supply Chain - Track produce from farm to market",
+                explore_agrifi: "Explore AgriFi",
+                roadmap_title: "Our Roadmap",
+                roadmap: "Roadmap",
+                roadmap_phase1: "Phase 1: Q1 2026",
+                roadmap_phase1_desc: "Launch Novarex Wallet with P2P payments and merchant tools.",
+                roadmap_phase2: "Phase 2: Q3 2026",
+                roadmap_phase2_desc: "Introduce Novarex Social with KDA rewards and developer hubs.",
+                roadmap_phase3: "Phase 3: Q1 2027",
+                roadmap_phase3_desc: "Expand AgriFi with cross-chain bridges and sustainable farming investments.",
+                team_title: "Meet Our Visionaries",
+                sprouts_king: "Sprouts King",
+                founder_ceo: "Founder & CEO",
+                sprouts_king_desc: "Visionary entrepreneur driving financial inclusion in Africa, leading Novarex's mission to integrate Kadena's blockchain into agriculture and DeFi.",
+                blessing_sunday: "Blessing Sunday",
+                secretary: "Secretary",
+                blessing_sunday_desc: "B.Sc International Relations, forging global partnerships and building vibrant communities for Novarex's ecosystem.",
+                stunner_jnr: "Stunner Jnr",
+                coo: "COO",
+                stunner_jnr_desc: "Expert in scalable business operations, driving Novarex's community and market expansion across African regions.",
+                peterson: "Peterson",
+                cto: "CTO",
+                peterson_desc: "Architect of Novarex's blockchain infrastructure, delivering scalable and secure solutions for African markets.",
+                novarex: "Novarex",
+                footer_desc: "Driving Kadena's blockchain dominance in Africa's financial future through innovation and community.",
+                platform: "Platform",
+                home: "Home",
+                about: "About",
+                ecosystem: "Ecosystem",
+                team: "Team",
+                resources: "Resources",
+                documentation: "Documentation",
+                whitepaper: "Whitepaper",
+                support: "Support",
+                language: "Language",
+                all_rights_reserved: "All rights reserved.",
+                contact: "Contact"
+            },
+            es: {
+                hero_title: "Novarex",
+                hero_subtitle: "Revolucionando el panorama financiero de África con la blockchain de alto rendimiento de Kadena, habilitando DeFi seguro, NFTs y financiamiento agrícola sostenible.",
+                explore_ecosystem: "Explorar Ecosistema",
+                read_docs: "Leer Documentos",
+                get_started: "Comenzar",
+                about_title: "Acerca de Novarex"
+            },
+            fr: {
+                hero_title: "Novarex",
+                about_title: "À propos de Novarex"
+            },
+            pt: {
+                hero_title: "Novarex",
+                about_title: "Sobre Novarex"
+            },
+            ar: {
+                hero_title: "نوفاركس",
+                about_title: "حول نوفاركس"
+            },
+            sw: {
+                hero_title: "Novarex",
+                about_title: "Kuhusu Novarex"
+            },
+            zh: {
+                hero_title: "Novarex",
+                about_title: "关于Novarex"
+            }
+        };
+
+        let currentLanguage = 'en';
+
+        // Update content based on language
+        function updateContent(lang) {
+            currentLanguage = lang;
+            const t = translations[lang] || translations['en'];
+            
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (t[key]) {
+                    if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                        element.placeholder = t[key];
+                    } else {
+                        element.textContent = t[key];
+                    }
+                }
+            });
+        }
+
+        // Language Selector
+        document.getElementById('language-selector').addEventListener('change', (e) => {
+            updateContent(e.target.value);
         });
 
-        // Smooth Scrolling
+        // Hamburger Menu with body scroll lock
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+        const body = document.body;
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navLinks.classList.toggle('active');
+            body.classList.toggle('menu-open');
+        });
+
+        // Close menu when clicking outside
+        body.addEventListener('click', (e) => {
+            if (navLinks.classList.contains('active') && 
+                !navLinks.contains(e.target) && 
+                !hamburger.contains(e.target)) {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+                body.classList.remove('menu-open');
+            }
+        });
+
+        // Smooth Scrolling with menu close
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', e => {
                 e.preventDefault();
-                document.querySelector(anchor.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+                const target = document.querySelector(anchor.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                    // Close mobile menu
+                    if (window.innerWidth <= 768) {
+                        hamburger.classList.remove('active');
+                        navLinks.classList.remove('active');
+                        body.classList.remove('menu-open');
+                    }
+                }
             });
+        });
+
+        // Pop-up Handling
+        const popup = document.getElementById('coming-soon-popup');
+        const popupTitle = document.getElementById('popup-title');
+        const popupMessage = document.getElementById('popup-message');
+        const popupOverlay = document.getElementById('popup-overlay');
+        const popupClose = document.getElementById('popup-close');
+
+        document.querySelectorAll('.ecosystem-cta, .nav-cta').forEach(button => {
+            button.addEventListener('click', () => {
+                const type = button.dataset.popup;
+                let title, message;
+                if (type === 'wallet') {
+                    title = 'Novarex Wallet';
+                    message = 'Wallet Coming Soon! Stay tuned for secure, user-friendly transactions.';
+                } else if (type === 'social') {
+                    title = 'Novarex Social';
+                    message = 'Community Page Coming Soon! Join us for vibrant engagement and rewards.';
+                } else if (type === 'agrifi') {
+                    title = 'Novarex AgriFi';
+                    message = 'AgriFi Coming Soon! Empowering African farmers with blockchain financing.';
+                } else {
+                    title = 'Coming Soon!';
+                    message = 'This feature is under development. Stay tuned for updates!';
+                }
+                popupTitle.textContent = title;
+                popupMessage.textContent = message;
+                popup.classList.add('show');
+                popupOverlay.classList.add('show');
+            });
+        });
+
+        popupClose.addEventListener('click', () => {
+            popup.classList.remove('show');
+            popupOverlay.classList.remove('show');
+        });
+
+        popupOverlay.addEventListener('click', () => {
+            popup.classList.remove('show');
+            popupOverlay.classList.remove('show');
         });
 
         // Intersection Observer
@@ -723,937 +1827,25 @@
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('visible');
-                    if (entry.target.classList.contains('stats-container')) {
-                        entry.target.querySelectorAll('.stat-card').forEach(card => {
-                            const number = card.querySelector('.stat-number');
-                            const text = number.textContent;
-                            let target, suffix = '';
-                            if (text.includes('K+')) {
-                                target = parseFloat(text.replace('K+', '')) * 1000;
-                                suffix = 'K+';
-                            } else if (text.includes('B+')) {
-                                target = parseFloat(text.replace('$', '').replace('B+', '')) * 1000000000;
-                                suffix = 'B+';
-                            } else if (text.includes('%')) {
-                                target = parseFloat(text.replace('%', ''));
-                                suffix = '%';
-                            } else if (text.includes('+')) {
-                                target = parseFloat(text.replace('+', ''));
-                                suffix = '+';
-                            }
-                            animateCounter(number, target, 1500, suffix);
-                        });
-                    }
                 }
             });
         }, { threshold: 0.1, rootMargin: '0px 0px -20px 0px' });
 
         document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
-        function animateCounter(element, target, duration, suffix) {
-            let start = 0;
-            const increment = target / (duration / 16);
-            function updateCounter() {
-                start += increment;
-                element.textContent = Math.floor(start).toLocaleString() + suffix;
-                if (start < target) requestAnimationFrame(updateCounter);
-            }
-            updateCounter();
-        }
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            updateContent('en');
+        });
 
-        // Wallet Connection
-        document.getElementById('connect-wallet').addEventListener('click', async () => {
-            if (window.ethereum) {
-                try {
-                    const web3 = new Web3(window.ethereum);
-                    await window.ethereum.request({ method: 'eth_requestAccounts' });
-                    const accounts = await web3.eth.getAccounts();
-                    document.getElementById('connect-wallet').textContent = `Connected: ${accounts[0].slice(0, 6)}...${accounts[0].slice(-4)}`;
-                } catch (error) {
-                    alert(i18next.t('wallet_failed'));
-                }
+        // Scroll Nav Effect
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 100) {
+                nav.classList.add('scrolled');
             } else {
-                alert(i18next.t('install_chainweaver'));
+                nav.classList.remove('scrolled');
             }
-        });
-
-        // Theme Toggle
-        document.getElementById('theme-toggle').addEventListener('click', () => {
-            document.body.dataset.theme = document.body.dataset.theme === 'light' ? 'dark' : 'light';
-            updateContent();
-        });
-
-        // Multilingual Support
-        i18next.init({
-            lng: 'en',
-            resources: {
-                en: {
-                    translation: {
-                        hero_title: "Novarex: Kadena for Africa",
-                        hero_subtitle: "Empowering African finance with Kadena’s scalable blockchain, delivering secure DeFi, NFTs, and cross-chain solutions.",
-                        explore_platform: "Explore Platform",
-                        view_ecosystem: "View Ecosystem",
-                        about_title: "About Novarex",
-                        about_text1: "Novarex builds on Kadena’s Chainweb, a Layer 1 PoW blockchain with 20 parallel chains, to bring scalable and secure solutions to Africa’s financial ecosystem.",
-                        about_text2: "Using Pact’s human-readable smart contracts and Kadena’s gas stations, we enable low-cost, developer-friendly dApps for financial inclusion across Africa.",
-                        transactions_sec: "Transactions/Sec",
-                        uptime: "Uptime",
-                        total_value_locked: "Total Value Locked",
-                        partners: "African Partners",
-                        chainweb_scale: "Chainweb Scalability",
-                        chainweb_scale_desc: "Up to 480,000 TPS with 20 parallel chains for Africa’s growing markets.",
-                        pact_secure: "Pact Smart Contracts",
-                        pact_secure_desc: "Secure, human-readable coding for African developers.",
-                        ecosystem_title: "Novarex Ecosystem",
-                        defi_protocol: "DeFi for Africa",
-                        defi_protocol_desc: "Low-cost trading and lending with Kadena’s gas stations for African users.",
-                        nft_marketplace: "NFT Marketplace",
-                        nft_marketplace_desc: "Mint and trade African-inspired NFTs on Kadena’s network.",
-                        cross_chain_bridge: "Cross-Chain Bridge",
-                        cross_chain_bridge_desc: "Connect African markets with global blockchains via Kadena.",
-                        team_title: "Meet Our Visionaries",
-                        john_doe: "John Doe",
-                        founder_ceo: "Founder & CEO",
-                        john_doe_desc: "Blockchain expert with a passion for financial inclusion in Africa.",
-                        jane_ade: "Jane Ade",
-                        cto: "CTO",
-                        jane_ade_desc: "Expert in scalable blockchain solutions for African markets.",
-                        novarex: "Novarex",
-                        footer_desc: "Driving Kadena’s blockchain dominance in Africa’s financial future.",
-                        platform: "Platform",
-                        home: "Home",
-                        about: "About",
-                        ecosystem: "Ecosystem",
-                        resources: "Resources",
-                        documentation: "Documentation",
-                        whitepaper: "Whitepaper",
-                        language: "Language",
-                        all_rights_reserved: "All rights reserved.",
-                        wallet_failed: "Wallet connection failed.",
-                        install_chainweaver: "Please install Chainweaver or MetaMask.",
-                        contact: "Contact",
-                        connect_wallet: "Connect Wallet",
-                        toggle_theme: "Toggle Theme"
-                    }
-                },
-                es: {
-                    translation: {
-                        hero_title: "Novarex: Kadena para África",
-                        hero_subtitle: "Empoderando las finanzas africanas con la blockchain escalable de Kadena, ofreciendo soluciones seguras de DeFi, NFTs y cross-chain.",
-                        explore_platform: "Explorar Plataforma",
-                        view_ecosystem: "Ver Ecosistema",
-                        about_title: "Sobre Novarex",
-                        about_text1: "Novarex se basa en Chainweb de Kadena, una blockchain PoW de capa 1 con 20 cadenas paralelas, para brindar soluciones escalables y seguras al ecosistema financiero de África.",
-                        about_text2: "Utilizando los contratos inteligentes legibles de Pact y las estaciones de gas de Kadena, habilitamos dApps de bajo costo y amigables para desarrolladores para la inclusión financiera en África.",
-                        transactions_sec: "Transacciones/Seg",
-                        uptime: "Tiempo de Actividad",
-                        total_value_locked: "Valor Total Bloqueado",
-                        partners: "Socios Africanos",
-                        chainweb_scale: "Escalabilidad de Chainweb",
-                        chainweb_scale_desc: "Hasta 480,000 TPS con 20 cadenas paralelas para los mercados en crecimiento de África.",
-                        pact_secure: "Contratos Inteligentes Pact",
-                        pact_secure_desc: "Codificación segura y legible para desarrolladores africanos.",
-                        ecosystem_title: "Ecosistema Novarex",
-                        defi_protocol: "DeFi para África",
-                        defi_protocol_desc: "Comercio y préstamos de bajo costo con las estaciones de gas de Kadena para usuarios africanos.",
-                        nft_marketplace: "Mercado NFT",
-                        nft_marketplace_desc: "Crea y comercia NFTs inspirados en África en la red de Kadena.",
-                        cross_chain_bridge: "Puente Intercadenas",
-                        cross_chain_bridge_desc: "Conecta los mercados africanos con blockchains globales a través de Kadena.",
-                        team_title: "Conoce a Nuestros Visionarios",
-                        john_doe: "John Doe",
-                        founder_ceo: "Fundador y CEO",
-                        john_doe_desc: "Experto en blockchain con pasión por la inclusión financiera en África.",
-                        jane_ade: "Jane Ade",
-                        cto: "Directora de Tecnología",
-                        jane_ade_desc: "Experta en soluciones blockchain escalables para mercados africanos.",
-                        novarex: "Novarex",
-                        footer_desc: "Impulsando el dominio de la blockchain de Kadena en el futuro financiero de África.",
-                        platform: "Plataforma",
-                        home: "Inicio",
-                        about: "Acerca",
-                        ecosystem: "Ecosistema",
-                        resources: "Recursos",
-                        documentation: "Documentación",
-                        whitepaper: "Libro Blanco",
-                        language: "Idioma",
-                        all_rights_reserved: "Todos los derechos reservados.",
-                        wallet_failed: "Conexión de billetera fallida.",
-                        install_chainweaver: "Por favor, instala Chainweaver o MetaMask.",
-                        contact: "Contacto",
-                        connect_wallet: "Conectar Billetera",
-                        toggle_theme: "Cambiar Tema"
-                    }
-                },
-                zh: {
-                    translation: {
-                        hero_title: "Novarex：非洲的Kadena",
-                        hero_subtitle: "通过Kadena的可扩展区块链赋能非洲金融，提供安全的DeFi、NFT和跨链解决方案。",
-                        explore_platform: "探索平台",
-                        view_ecosystem: "查看生态系统",
-                        about_title: "关于Novarex",
-                        about_text1: "Novarex基于Kadena的Chainweb，一个具有20条并行链的Layer 1 PoW区块链，为非洲金融生态系统带来可扩展和安全的解决方案。",
-                        about_text2: "利用Pact的人类可读智能合约和Kadena的气体站，我们为非洲的金融包容性启用低成本、开发者友好的dApps。",
-                        transactions_sec: "交易/秒",
-                        uptime: "运行时间",
-                        total_value_locked: "总锁定价值",
-                        partners: "非洲合作伙伴",
-                        chainweb_scale: "Chainweb可扩展性",
-                        chainweb_scale_desc: "通过20条并行链实现高达480,000 TPS，满足非洲增长市场的需求。",
-                        pact_secure: "Pact智能合约",
-                        pact_secure_desc: "为非洲开发者提供安全、人类可读的编码。",
-                        ecosystem_title: "Novarex生态系统",
-                        defi_protocol: "非洲的DeFi",
-                        defi_protocol_desc: "使用Kadena的气体站为非洲用户提供低成本交易和借贷。",
-                        nft_marketplace: "NFT市场",
-                        nft_marketplace_desc: "在Kadena的网络上铸造和交易非洲风格的NFT。",
-                        cross_chain_bridge: "跨链桥",
-                        cross_chain_bridge_desc: "通过Kadena连接非洲市场与全球区块链。",
-                        team_title: "认识我们的远见者",
-                        john_doe: "John Doe",
-                        founder_ceo: "创始人兼首席执行官",
-                        john_doe_desc: "区块链专家，热衷于非洲的金融包容性。",
-                        jane_ade: "Jane Ade",
-                        cto: "首席技术官",
-                        jane_ade_desc: "非洲市场可扩展区块链解决方案的专家。",
-                        novarex: "Novarex",
-                        footer_desc: "推动Kadena的区块链在非洲金融未来的主导地位。",
-                        platform: "平台",
-                        home: "首页",
-                        about: "关于",
-                        ecosystem: "生态系统",
-                        resources: "资源",
-                        documentation: "文档",
-                        whitepaper: "白皮书",
-                        language: "语言",
-                        all_rights_reserved: "保留所有权利。",
-                        wallet_failed: "钱包连接失败。",
-                        install_chainweaver: "请安装Chainweaver或MetaMask。",
-                        contact: "联系",
-                        connect_wallet: "连接钱包",
-                        toggle_theme: "切换主题"
-                    }
-                },
-                ja: {
-                    translation: {
-                        hero_title: "Novarex：アフリカのためのKadena",
-                        hero_subtitle: "Kadenaのスケーラブルなブロックチェーンを活用して、アフリカの金融を強化し、安全なDeFi、NFT、クロスチェーンソリューションを提供します。",
-                        explore_platform: "プラットフォームを探索",
-                        view_ecosystem: "エコシステムを見る",
-                        about_title: "Novarexについて",
-                        about_text1: "Novarexは、20の並列チェーンを持つKadenaのChainweb、Layer 1 PoWブロックチェーンを基盤に、アフリカの金融エコシステムにスケーラブルで安全なソリューションを提供します。",
-                        about_text2: "Pactの人間が読めるスマートコントラクトとKadenaのガスステーションを利用して、アフリカの金融包摂のための低コストで開発者フレンドリーなdAppsを可能にします。",
-                        transactions_sec: "トランザクション/秒",
-                        uptime: "稼働時間",
-                        total_value_locked: "総ロック価値",
-                        partners: "アフリカのパートナー",
-                        chainweb_scale: "Chainwebのスケーラビリティ",
-                        chainweb_scale_desc: "20の並列チェーンで最大480,000 TPSを実現し、アフリカの成長市場に対応。",
-                        pact_secure: "Pactスマートコントラクト",
-                        pact_secure_desc: "アフリカの開発者のための安全で人間が読めるコーディング。",
-                        ecosystem_title: "Novarexエコシステム",
-                        defi_protocol: "アフリカのDeFi",
-                        defi_protocol_desc: "Kadenaのガスステーションを使用してアフリカのユーザー向けに低コストの取引と貸付。",
-                        nft_marketplace: "NFTマーケットプレイス",
-                        nft_marketplace_desc: "Kadenaのネットワーク上でアフリカ風のNFTを鋳造および取引。",
-                        cross_chain_bridge: "クロスチェーンブリッジ",
-                        cross_chain_bridge_desc: "Kadenaを通じてアフリカ市場をグローバルなブロックチェーンに接続。",
-                        team_title: "私たちのビジョナリーに会う",
-                        john_doe: "John Doe",
-                        founder_ceo: "創業者兼CEO",
-                        john_doe_desc: "アフリカの金融包摂に情熱を持つブロックチェーン専門家。",
-                        jane_ade: "Jane Ade",
-                        cto: "最高技術責任者",
-                        jane_ade_desc: "アフリカ市場向けのスケーラブルなブロックチェーンソリューションの専門家。",
-                        novarex: "Novarex",
-                        footer_desc: "アフリカの金融未来におけるKadenaのブロックチェーン支配を推進。",
-                        platform: "プラットフォーム",
-                        home: "ホーム",
-                        about: "概要",
-                        ecosystem: "エコシステム",
-                        resources: "リソース",
-                        documentation: "ドキュメント",
-                        whitepaper: "ホワイトペーパー",
-                        language: "言語",
-                        all_rights_reserved: "全著作権所有。",
-                        wallet_failed: "ウォレット接続に失敗しました。",
-                        install_chainweaver: "ChainweaverまたはMetaMaskをインストールしてください。",
-                        contact: "連絡",
-                        connect_wallet: "ウォレットを接続",
-                        toggle_theme: "テーマを切り替え"
-                    }
-                },
-                ko: {
-                    translation: {
-                        hero_title: "Novarex: 아프리카를 위한 Kadena",
-                        hero_subtitle: "Kadena의 스케일러블 블록체인을 통해 아프리카 금융을 강화하며, 안전한 DeFi, NFT 및 크로스체인 솔루션을 제공합니다.",
-                        explore_platform: "플랫폼 탐색",
-                        view_ecosystem: "에코시스템 보기",
-                        about_title: "Novarex 소개",
-                        about_text1: "Novarex는 20개의 병렬 체인을 가진 Kadena의 Chainweb, Layer 1 PoW 블록체인을 기반으로 아프리카 금융 생태계에 스케일러블하고 안전한 솔루션을 제공합니다.",
-                        about_text2: "Pact의 인간이 읽을 수 있는 스마트 컨트랙트와 Kadena의 가스 스테이션을 활용하여 아프리카의 금융 포용성을 위한 저비용, 개발자 친화적인 dApps를 가능하게 합니다.",
-                        transactions_sec: "초당 트랜잭션",
-                        uptime: "가동 시간",
-                        total_value_locked: "총 잠금 가치",
-                        partners: "아프리카 파트너",
-                        chainweb_scale: "Chainweb 스케일러빌리티",
-                        chainweb_scale_desc: "20개의 병렬 체인으로 최대 480,000 TPS를 달성하여 아프리카의 성장 시장에 대응.",
-                        pact_secure: "Pact 스마트 컨트랙트",
-                        pact_secure_desc: "아프리카 개발자를 위한 안전하고 인간이 읽을 수 있는 코딩.",
-                        ecosystem_title: "Novarex 에코시스템",
-                        defi_protocol: "아프리카의 DeFi",
-                        defi_protocol_desc: "Kadena의 가스 스테이션을 사용한 아프리카 사용자向け 저비용 거래 및 대출.",
-                        nft_marketplace: "NFT 마켓플레이스",
-                        nft_marketplace_desc: "Kadena 네트워크에서 아프리카 스타일의 NFT를 발행하고 거래.",
-                        cross_chain_bridge: "크로스체인 브릿지",
-                        cross_chain_bridge_desc: "Kadena를 통해 아프리카 시장을 글로벌 블록체인과 연결.",
-                        team_title: "우리의 비전가 만나기",
-                        john_doe: "John Doe",
-                        founder_ceo: "창립자 겸 CEO",
-                        john_doe_desc: "아프리카의 금융 포용성에 열정을 가진 블록체인 전문가.",
-                        jane_ade: "Jane Ade",
-                        cto: "최고기술책임자",
-                        jane_ade_desc: "아프리카 시장을 위한 스케일러블 블록체인 솔루션 전문가.",
-                        novarex: "Novarex",
-                        footer_desc: "아프리카 금융 미래에서 Kadena의 블록체인 지배력을 추진.",
-                        platform: "플랫폼",
-                        home: "홈",
-                        about: "소개",
-                        ecosystem: "에코시스템",
-                        resources: "자원",
-                        documentation: "문서",
-                        whitepaper: "백서",
-                        language: "언어",
-                        all_rights_reserved: "모든 권리 보유.",
-                        wallet_failed: "월렛 연결 실패.",
-                        install_chainweaver: "Chainweaver 또는 MetaMask를 설치해 주세요.",
-                        contact: "연락처",
-                        connect_wallet: "월렛 연결",
-                        toggle_theme: "테마 전환"
-                    }
-                },
-                ru: {
-                    translation: {
-                        hero_title: "Novarex: Kadena для Африки",
-                        hero_subtitle: "Укрепление африканских финансов с помощью масштабируемого блокчейна Kadena, предоставляющего безопасные решения DeFi, NFT и кросс-чейн.",
-                        explore_platform: "Исследовать платформу",
-                        view_ecosystem: "Посмотреть экосистему",
-                        about_title: "О Novarex",
-                        about_text1: "Novarex использует Chainweb от Kadena, блокчейн PoW уровня 1 с 20 параллельными цепями, для предоставления масштабируемых и безопасных решений для финансовой экосистемы Африки.",
-                        about_text2: "С помощью человекочитаемых смарт-контрактов Pact и газовых станций Kadena мы создаем недорогие и удобные для разработчиков dApps для финансовой инклюзии в Африке.",
-                        transactions_sec: "Транзакций/сек",
-                        uptime: "Время работы",
-                        total_value_locked: "Общая заблокированная стоимость",
-                        partners: "Африканские партнеры",
-                        chainweb_scale: "Масштабируемость Chainweb",
-                        chainweb_scale_desc: "До 480,000 TPS с 20 параллельными цепями для растущих рынков Африки.",
-                        pact_secure: "Смарт-контракты Pact",
-                        pact_secure_desc: "Безопасное, человекочитаемое кодирование для африканских разработчиков.",
-                        ecosystem_title: "Экосистема Novarex",
-                        defi_protocol: "DeFi для Африки",
-                        defi_protocol_desc: "Недорогие торговля и кредитование с использованием газовых станций Kadena для африканских пользователей.",
-                        nft_marketplace: "Рынок NFT",
-                        nft_marketplace_desc: "Создание и торговля NFT в африканском стиле на сети Kadena.",
-                        cross_chain_bridge: "Кросс-чейн мост",
-                        cross_chain_bridge_desc: "Связь африканских рынков с глобальными блокчейнами через Kadena.",
-                        team_title: "Познакомьтесь с нашими визионерами",
-                        john_doe: "John Doe",
-                        founder_ceo: "Основатель и генеральный директор",
-                        john_doe_desc: "Эксперт по блокчейну с страстью к финансовой инклюзии в Африке.",
-                        jane_ade: "Jane Ade",
-                        cto: "Технический директор",
-                        jane_ade_desc: "Эксперт по масштабируемым блокчейн-решениям для африканских рынков.",
-                        novarex: "Novarex",
-                        footer_desc: "Движение к доминированию блокчейна Kadena в финансовом будущем Африки.",
-                        platform: "Платформа",
-                        home: "Главная",
-                        about: "О нас",
-                        ecosystem: "Экосистема",
-                        resources: "Ресурсы",
-                        documentation: "Документация",
-                        whitepaper: "Белая книга",
-                        language: "Язык",
-                        all_rights_reserved: "Все права защищены.",
-                        wallet_failed: "Ошибка подключения кошелька.",
-                        install_chainweaver: "Пожалуйста, установите Chainweaver или MetaMask.",
-                        contact: "Контакты",
-                        connect_wallet: "Подключить кошелек",
-                        toggle_theme: "Переключить тему"
-                    }
-                },
-                pt: {
-                    translation: {
-                        hero_title: "Novarex: Kadena para a África",
-                        hero_subtitle: "Capacitando as finanças africanas com a blockchain escalável da Kadena, oferecendo soluções seguras de DeFi, NFTs e cross-chain.",
-                        explore_platform: "Explorar Plataforma",
-                        view_ecosystem: "Ver Ecosistema",
-                        about_title: "Sobre Novarex",
-                        about_text1: "Novarex utiliza o Chainweb da Kadena, uma blockchain PoW de camada 1 com 20 cadeias paralelas, para trazer soluções escaláveis e seguras ao ecossistema financeiro da África.",
-                        about_text2: "Usando os contratos inteligentes legíveis do Pact e as estações de gás da Kadena, possibilitamos dApps de baixo custo e amigáveis para desenvolvedores para a inclusão financeira na África.",
-                        transactions_sec: "Transações/Seg",
-                        uptime: "Tempo de Atividade",
-                        total_value_locked: "Valor Total Bloqueado",
-                        partners: "Parceiros Africanos",
-                        chainweb_scale: "Escalabilidade do Chainweb",
-                        chainweb_scale_desc: "Até 480,000 TPS com 20 cadeias paralelas para os mercados em crescimento da África.",
-                        pact_secure: "Contratos Inteligentes Pact",
-                        pact_secure_desc: "Codificação segura e legível para desenvolvedores africanos.",
-                        ecosystem_title: "Ecossistema Novarex",
-                        defi_protocol: "DeFi para a África",
-                        defi_protocol_desc: "Negociação e empréstimos de baixo custo com as estações de gás da Kadena para usuários africanos.",
-                        nft_marketplace: "Mercado NFT",
-                        nft_marketplace_desc: "Criação e comércio de NFTs inspirados na África na rede da Kadena.",
-                        cross_chain_bridge: "Ponte Intercadenas",
-                        cross_chain_bridge_desc: "Conectar mercados africanos com blockchains globais via Kadena.",
-                        team_title: "Conheça Nossos Visionários",
-                        john_doe: "John Doe",
-                        founder_ceo: "Fundador e CEO",
-                        john_doe_desc: "Especialista em blockchain com paixão pela inclusão financeira na África.",
-                        jane_ade: "Jane Ade",
-                        cto: "Diretora de Tecnologia",
-                        jane_ade_desc: "Especialista em soluções blockchain escaláveis para mercados africanos.",
-                        novarex: "Novarex",
-                        footer_desc: "Impulsionando o domínio da blockchain da Kadena no futuro financeiro da África.",
-                        platform: "Plataforma",
-                        home: "Início",
-                        about: "Sobre",
-                        ecosystem: "Ecossistema",
-                        resources: "Recursos",
-                        documentation: "Documentação",
-                        whitepaper: "Whitepaper",
-                        language: "Idioma",
-                        all_rights_reserved: "Todos os direitos reservados.",
-                        wallet_failed: "Falha na conexão da carteira.",
-                        install_chainweaver: "Por favor, instale Chainweaver ou MetaMask.",
-                        contact: "Contato",
-                        connect_wallet: "Conectar Carteira",
-                        toggle_theme: "Alternar Tema"
-                    }
-                },
-                hi: {
-                    translation: {
-                        hero_title: "Novarex: अफ्रीका के लिए Kadena",
-                        hero_subtitle: "Kadena के स्केलेबल ब्लॉकचेन के साथ अफ्रीकी वित्त को सशक्त बनाना, सुरक्षित DeFi, NFT और क्रॉस-चेन समाधान प्रदान करना।",
-                        explore_platform: "प्लेटफॉर्म का अन्वेषण करें",
-                        view_ecosystem: "इकोसिस्टम देखें",
-                        about_title: "Novarex के बारे में",
-                        about_text1: "Novarex, Kadena के Chainweb, 20 समानांतर चेन के साथ एक Layer 1 PoW ब्लॉकचेन पर आधारित है, जो अफ्रीका के वित्तीय पारिस्थितिकी तंत्र के लिए स्केलेबल और सुरक्षित समाधान लाता है।",
-                        about_text2: "Pact के मानव-पठनीय स्मार्ट कॉन्ट्रैक्ट्स और Kadena के गैस स्टेशनों का उपयोग करके, हम अफ्रीका में वित्तीय समावेशन के लिए कम लागत, डेवलपर-फ्रेंडली dApps को सक्षम करते हैं।",
-                        transactions_sec: "लेनदेन/सेकंड",
-                        uptime: "उपलब्धता",
-                        total_value_locked: "कुल लॉक मूल्य",
-                        partners: "अफ्रीकी साझेदार",
-                        chainweb_scale: "Chainweb स्केलेबिलिटी",
-                        chainweb_scale_desc: "अफ्रीका के बढ़ते बाजारों के लिए 20 समानांतर चेन के साथ 480,000 TPS तक।",
-                        pact_secure: "Pact स्मार्ट कॉन्ट्रैक्ट्स",
-                        pact_secure_desc: "अफ्रीकी डेवलपर्स के लिए सुरक्षित, मानव-पठनीय कोडिंग।",
-                        ecosystem_title: "Novarex इकोसिस्टम",
-                        defi_protocol: "अफ्रीका के लिए DeFi",
-                        defi_protocol_desc: "Kadena के गैस स्टेशनों के साथ अफ्रीकी उपयोगकर्ताओं के लिए कम लागत वाली ट्रेडिंग और उधार।",
-                        nft_marketplace: "NFT मार्केटप्लेस",
-                        nft_marketplace_desc: "Kadena के नेटवर्क पर अफ्रीकी प्रेरित NFT बनाएं और व्यापार करें।",
-                        cross_chain_bridge: "क्रॉस-चेन ब्रिज",
-                        cross_chain_bridge_desc: "Kadena के माध्यम से अफ्रीकी बाजारों को वैश्विक ब्लॉकचेन से जोड़ें।",
-                        team_title: "हमारे दूरदर्शी लोगों से मिलें",
-                        john_doe: "John Doe",
-                        founder_ceo: "संस्थापक और सीईओ",
-                        john_doe_desc: "अफ्रीका में वित्तीय समावेशन के लिए जुनूनी ब्लॉकचेन विशेषज्ञ।",
-                        jane_ade: "Jane Ade",
-                        cto: "मुख्य प्रौद्योगिकी अधिकारी",
-                        jane_ade_desc: "अफ्रीकी बाजारों के लिए स्केलेबल ब्लॉकचेन समाधानों की विशेषज्ञ।",
-                        novarex: "Novarex",
-                        footer_desc: "अफ्रीका के वित्तीय भविष्य में Kadena के ब्लॉकचेन प्रभुत्व को बढ़ावा देना।",
-                        platform: "प्लेटफॉर्म",
-                        home: "होम",
-                        about: "बारे में",
-                        ecosystem: "इकोसिस्टम",
-                        resources: "संसाधन",
-                        documentation: "दस्तावेज़ीकरण",
-                        whitepaper: "श्वेतपत्र",
-                        language: "भाषा",
-                        all_rights_reserved: "सर्वाधिकार सुरक्षित।",
-                        wallet_failed: "वॉलेट कनेक्शन विफल।",
-                        install_chainweaver: "कृपया Chainweaver या MetaMask स्थापित करें।",
-                        contact: "संपर्क",
-                        connect_wallet: "वॉलेट कनेक्ट करें",
-                        toggle_theme: "थीम टॉगल करें"
-                    }
-                },
-                vi: {
-                    translation: {
-                        hero_title: "Novarex: Kadena cho Châu Phi",
-                        hero_subtitle: "Trao quyền cho tài chính Châu Phi với blockchain có khả năng mở rộng của Kadena, cung cấp các giải pháp DeFi, NFT và cross-chain an toàn.",
-                        explore_platform: "Khám Phá Nền Tảng",
-                        view_ecosystem: "Xem Hệ Sinh Thái",
-                        about_title: "Giới Thiệu Novarex",
-                        about_text1: "Novarex xây dựng trên Chainweb của Kadena, một blockchain PoW Layer 1 với 20 chuỗi song song, để mang lại các giải pháp có khả năng mở rộng và an toàn cho hệ sinh thái tài chính Châu Phi.",
-                        about_text2: "Sử dụng các hợp đồng thông minh dễ đọc của Pact và các trạm xăng của Kadena, chúng tôi kích hoạt các dApps chi phí thấp, thân thiện với nhà phát triển để thúc đẩy tài chính toàn diện ở Châu Phi.",
-                        transactions_sec: "Giao Dịch/Giây",
-                        uptime: "Thời Gian Hoạt Động",
-                        total_value_locked: "Tổng Giá Trị Khóa",
-                        partners: "Đối Tác Châu Phi",
-                        chainweb_scale: "Khả Năng Mở Rộng Chainweb",
-                        chainweb_scale_desc: "Lên đến 480,000 TPS với 20 chuỗi song song cho các thị trường đang phát triển của Châu Phi.",
-                        pact_secure: "Hợp Đồng Thông Minh Pact",
-                        pact_secure_desc: "Mã hóa an toàn, dễ đọc cho các nhà phát triển Châu Phi.",
-                        ecosystem_title: "Hệ Sinh Thái Novarex",
-                        defi_protocol: "DeFi cho Châu Phi",
-                        defi_protocol_desc: "Giao dịch và cho vay chi phí thấp với các trạm xăng của Kadena cho người dùng Châu Phi.",
-                        nft_marketplace: "Thị Trường NFT",
-                        nft_marketplace_desc: "Tạo và giao dịch NFT lấy cảm hứng từ Châu Phi trên mạng Kadena.",
-                        cross_chain_bridge: "Cầu Cross-Chain",
-                        cross_chain_bridge_desc: "Kết nối các thị trường Châu Phi với các blockchain toàn cầu qua Kadena.",
-                        team_title: "Gặp Gỡ Các Nhà Tầm Nhìn Của Chúng Tôi",
-                        john_doe: "John Doe",
-                        founder_ceo: "Nhà Sáng Lập & CEO",
-                        john_doe_desc: "Chuyên gia blockchain với đam mê về tài chính toàn diện ở Châu Phi.",
-                        jane_ade: "Jane Ade",
-                        cto: "Giám Đốc Công Nghệ",
-                        jane_ade_desc: "Chuyên gia về các giải pháp blockchain có khả năng mở rộng cho các thị trường Châu Phi.",
-                        novarex: "Novarex",
-                        footer_desc: "Thúc đẩy sự thống trị blockchain của Kadena trong tương lai tài chính của Châu Phi.",
-                        platform: "Nền Tảng",
-                        home: "Trang Chủ",
-                        about: "Giới Thiệu",
-                        ecosystem: "Hệ Sinh Thái",
-                        resources: "Tài Nguyên",
-                        documentation: "Tài Liệu",
-                        whitepaper: "Sách Trắng",
-                        language: "Ngôn Ngữ",
-                        all_rights_reserved: "Tất cả quyền được bảo lưu.",
-                        wallet_failed: "Kết nối ví thất bại.",
-                        install_chainweaver: "Vui lòng cài đặt Chainweaver hoặc MetaMask.",
-                        contact: "Liên Hệ",
-                        connect_wallet: "Kết Nối Ví",
-                        toggle_theme: "Chuyển Đổi Chủ Đề"
-                    }
-                },
-                fil: {
-                    translation: {
-                        hero_title: "Novarex: Kadena para sa Africa",
-                        hero_subtitle: "Pagbibigay kapangyarihan sa pananalapi ng Africa gamit ang scalable na blockchain ng Kadena, na naghahatid ng ligtas na DeFi, NFT, at cross-chain na mga solusyon.",
-                        explore_platform: "I-explore ang Platform",
-                        view_ecosystem: "Tingnan ang Ecosystem",
-                        about_title: "Tungkol sa Novarex",
-                        about_text1: "Ang Novarex ay gumagawa sa Chainweb ng Kadena, isang Layer 1 PoW blockchain na may 20 parallel na chain, upang magdala ng scalable at ligtas na mga solusyon sa financial ecosystem ng Africa.",
-                        about_text2: "Gamit ang mga human-readable na smart contract ng Pact at ang mga gas station ng Kadena, kami ay nagbibigay-daan sa mababang gastos, developer-friendly na dApps para sa financial inclusion sa Africa.",
-                        transactions_sec: "Mga Transaksyon/Seg",
-                        uptime: "Oras ng Pag-andar",
-                        total_value_locked: "Kabuuang Halaga na Naka-lock",
-                        partners: "Mga African Partner",
-                        chainweb_scale: "Scalability ng Chainweb",
-                        chainweb_scale_desc: "Hanggang 480,000 TPS gamit ang 20 parallel na chain para sa lumalaking merkado ng Africa.",
-                        pact_secure: "Pact Smart Contracts",
-                        pact_secure_desc: "Ligtas, human-readable na coding para sa mga developer ng Africa.",
-                        ecosystem_title: "Ecosystem ng Novarex",
-                        defi_protocol: "DeFi para sa Africa",
-                        defi_protocol_desc: "Mababang gastos na trading at lending gamit ang mga gas station ng Kadena para sa mga user ng Africa.",
-                        nft_marketplace: "NFT Marketplace",
-                        nft_marketplace_desc: "Gumawa at mag-trade ng mga NFT na inspirasyon ng Africa sa network ng Kadena.",
-                        cross_chain_bridge: "Cross-Chain Bridge",
-                        cross_chain_bridge_desc: "Iugnay ang mga merkado ng Africa sa mga global blockchain sa pamamagitan ng Kadena.",
-                        team_title: "Kilalanin ang Aming Mga Visionary",
-                        john_doe: "John Doe",
-                        founder_ceo: "Tagapagtatag at CEO",
-                        john_doe_desc: "Eksperto sa blockchain na may hilig sa financial inclusion sa Africa.",
-                        jane_ade: "Jane Ade",
-                        cto: "CTO",
-                        jane_ade_desc: "Eksperto sa scalable na blockchain solutions para sa mga merkado ng Africa.",
-                        novarex: "Novarex",
-                        footer_desc: "Pagtulak sa dominasyon ng blockchain ng Kadena sa hinaharap ng pananalapi ng Africa.",
-                        platform: "Platform",
-                        home: "Home",
-                        about: "Tungkol",
-                        ecosystem: "Ecosystem",
-                        resources: "Mga Resource",
-                        documentation: "Dokumentasyon",
-                        whitepaper: "Whitepaper",
-                        language: "Wika",
-                        all_rights_reserved: "Lahat ng karapatan ay nakalaan.",
-                        wallet_failed: "Nabigo ang koneksyon sa wallet.",
-                        install_chainweaver: "Mangyaring i-install ang Chainweaver o MetaMask.",
-                        contact: "Kontak",
-                        connect_wallet: "I-konekta ang Wallet",
-                        toggle_theme: "I-toggle ang Tema"
-                    }
-                },
-                tr: {
-                    translation: {
-                        hero_title: "Novarex: Afrika için Kadena",
-                        hero_subtitle: "Kadena’nın ölçeklenebilir blok zinciri ile Afrika finansını güçlendiriyor, güvenli DeFi, NFT ve zincirler arası çözümler sunuyor.",
-                        explore_platform: "Platformu Keşfet",
-                        view_ecosystem: "Ekosistemi Görüntüle",
-                        about_title: "Novarex Hakkında",
-                        about_text1: "Novarex, Kadena’nın 20 paralel zincire sahip Layer 1 PoW blok zinciri Chainweb’i kullanarak Afrika’nın finansal ekosistemine ölçeklenebilir ve güvenli çözümler sunar.",
-                        about_text2: "Pact’ın insan tarafından okunabilir akıllı sözleşmeleri ve Kadena’nın gaz istasyonlarını kullanarak, Afrika’da finansal kapsayıcılık için düşük maliyetli, geliştirici dostu dApps’leri mümkün kılıyoruz.",
-                        transactions_sec: "Saniyede İşlem",
-                        uptime: "Çalışma Süresi",
-                        total_value_locked: "Toplam Kilitli Değer",
-                        partners: "Afrikalı Ortaklar",
-                        chainweb_scale: "Chainweb Ölçeklenebilirliği",
-                        chainweb_scale_desc: "Afrika’nın büyüyen pazarları için 20 paralel zincirle 480,000 TPS’ye kadar.",
-                        pact_secure: "Pact Akıllı Sözleşmeler",
-                        pact_secure_desc: "Afrikalı geliştiriciler için güvenli, insan tarafından okunabilir kodlama.",
-                        ecosystem_title: "Novarex Ekosistemi",
-                        defi_protocol: "Afrika için DeFi",
-                        defi_protocol_desc: "Kadena’nın gaz istasyonları ile Afrikalı kullanıcılar için düşük maliyetli ticaret ve borç verme.",
-                        nft_marketplace: "NFT Pazarı",
-                        nft_marketplace_desc: "Kadena’nın ağında Afrika esintili NFT’ler oluşturun ve takas edin.",
-                        cross_chain_bridge: "Zincirler Arası Köprü",
-                        cross_chain_bridge_desc: "Kadena aracılığıyla Afrika pazarlarını küresel blok zincirlerle bağlayın.",
-                        team_title: "Vizyonerlerimizle Tanışın",
-                        john_doe: "John Doe",
-                        founder_ceo: "Kurucu ve CEO",
-                        john_doe_desc: "Afrika’da finansal kapsayıcılığa tutkuyla bağlı blok zinciri uzmanı.",
-                        jane_ade: "Jane Ade",
-                        cto: "Teknoloji Direktörü",
-                        jane_ade_desc: "Afrika pazarları için ölçeklenebilir blok zinciri çözümleri uzmanı.",
-                        novarex: "Novarex",
-                        footer_desc: "Afrika’nın finansal geleceğinde Kadena’nın blok zinciri hakimiyetini güçlendiriyor.",
-                        platform: "Platform",
-                        home: "Ana Sayfa",
-                        about: "Hakkında",
-                        ecosystem: "Ekosistem",
-                        resources: "Kaynaklar",
-                        documentation: "Dokümantasyon",
-                        whitepaper: "Beyaz Kağıt",
-                        language: "Dil",
-                        all_rights_reserved: "Tüm hakları saklıdır.",
-                        wallet_failed: "Cüzdan bağlantısı başarısız oldu.",
-                        install_chainweaver: "Lütfen Chainweaver veya MetaMask kurun.",
-                        contact: "İletişim",
-                        connect_wallet: "Cüzdanı Bağla",
-                        toggle_theme: "Temayı Değiştir"
-                    }
-                },
-                de: {
-                    translation: {
-                        hero_title: "Novarex: Kadena für Afrika",
-                        hero_subtitle: "Stärkung der afrikanischen Finanzen mit Kadenas skalierbarem Blockchain, das sichere DeFi-, NFT- und Cross-Chain-Lösungen bietet.",
-                        explore_platform: "Plattform erkunden",
-                        view_ecosystem: "Ökosystem ansehen",
-                        about_title: "Über Novarex",
-                        about_text1: "Novarex baut auf Kadenas Chainweb, einer Layer-1-PoW-Blockchain mit 20 parallelen Ketten, um skalierbare und sichere Lösungen für das afrikanische Finanzökosystem bereitzustellen.",
-                        about_text2: "Mit den menschenlesbaren Smart Contracts von Pact und Kadenas Gasstationen ermöglichen wir kostengünstige, entwicklerfreundliche dApps für finanzielle Inklusion in Afrika.",
-                        transactions_sec: "Transaktionen/Sek",
-                        uptime: "Betriebszeit",
-                        total_value_locked: "Gesamter gesperrter Wert",
-                        partners: "Afrikanische Partner",
-                        chainweb_scale: "Chainweb Skalierbarkeit",
-                        chainweb_scale_desc: "Bis zu 480.000 TPS mit 20 parallelen Ketten für Afrikas wachsende Märkte.",
-                        pact_secure: "Pact Smart Contracts",
-                        pact_secure_desc: "Sicheres, menschenlesbares Coding für afrikanische Entwickler.",
-                        ecosystem_title: "Novarex Ökosystem",
-                        defi_protocol: "DeFi für Afrika",
-                        defi_protocol_desc: "Kostengünstiger Handel und Kreditvergabe mit Kadenas Gasstationen für afrikanische Nutzer.",
-                        nft_marketplace: "NFT-Marktplatz",
-                        nft_marketplace_desc: "Prägen und handeln Sie afrikanisch inspirierte NFTs auf Kadenas Netzwerk.",
-                        cross_chain_bridge: "Cross-Chain-Brücke",
-                        cross_chain_bridge_desc: "Verbinden Sie afrikanische Märkte mit globalen Blockchains über Kadena.",
-                        team_title: "Treffen Sie unsere Visionäre",
-                        john_doe: "John Doe",
-                        founder_ceo: "Gründer und CEO",
-                        john_doe_desc: "Blockchain-Experte mit Leidenschaft für finanzielle Inklusion in Afrika.",
-                        jane_ade: "Jane Ade",
-                        cto: "Technische Direktorin",
-                        jane_ade_desc: "Expertin für skalierbare Blockchain-Lösungen für afrikanische Märkte.",
-                        novarex: "Novarex",
-                        footer_desc: "Förderung der Blockchain-Dominanz von Kadena in Afrikas finanzieller Zukunft.",
-                        platform: "Plattform",
-                        home: "Startseite",
-                        about: "Über",
-                        ecosystem: "Ökosystem",
-                        resources: "Ressourcen",
-                        documentation: "Dokumentation",
-                        whitepaper: "Whitepaper",
-                        language: "Sprache",
-                        all_rights_reserved: "Alle Rechte vorbehalten.",
-                        wallet_failed: "Verbindung zum Wallet fehlgeschlagen.",
-                        install_chainweaver: "Bitte installieren Sie Chainweaver oder MetaMask.",
-                        contact: "Kontakt",
-                        connect_wallet: "Wallet verbinden",
-                        toggle_theme: "Thema wechseln"
-                    }
-                },
-                fr: {
-                    translation: {
-                        hero_title: "Novarex : Kadena pour l'Afrique",
-                        hero_subtitle: "Renforcer les finances africaines avec la blockchain évolutive de Kadena, offrant des solutions DeFi, NFT et cross-chain sécurisées.",
-                        explore_platform: "Explorer la Plateforme",
-                        view_ecosystem: "Voir l'Écosystème",
-                        about_title: "À Propos de Novarex",
-                        about_text1: "Novarex s'appuie sur Chainweb de Kadena, une blockchain PoW de couche 1 avec 20 chaînes parallèles, pour fournir des solutions évolutives et sécurisées à l'écosystème financier africain.",
-                        about_text2: "En utilisant les contrats intelligents lisibles par l'humain de Pact et les stations de gaz de Kadena, nous permettons des dApps à faible coût et adaptées aux développeurs pour l'inclusion financière en Afrique.",
-                        transactions_sec: "Transactions/Sec",
-                        uptime: "Temps de Disponibilité",
-                        total_value_locked: "Valeur Totale Verrouillée",
-                        partners: "Partenaires Africains",
-                        chainweb_scale: "Évolutivité de Chainweb",
-                        chainweb_scale_desc: "Jusqu'à 480 000 TPS avec 20 chaînes parallèles pour les marchés en croissance de l'Afrique.",
-                        pact_secure: "Contrats Intelligents Pact",
-                        pact_secure_desc: "Codage sécurisé et lisible pour les développeurs africains.",
-                        ecosystem_title: "Écosystème Novarex",
-                        defi_protocol: "DeFi pour l'Afrique",
-                        defi_protocol_desc: "Commerce et prêts à faible coût avec les stations de gaz de Kadena pour les utilisateurs africains.",
-                        nft_marketplace: "Marché NFT",
-                        nft_marketplace_desc: "Créer et échanger des NFT inspirés de l'Afrique sur le réseau de Kadena.",
-                        cross_chain_bridge: "Pont Cross-Chain",
-                        cross_chain_bridge_desc: "Connecter les marchés africains aux blockchains mondiales via Kadena.",
-                        team_title: "Rencontrez Nos Visionnaires",
-                        john_doe: "John Doe",
-                        founder_ceo: "Fondateur et PDG",
-                        john_doe: "John Doe",
-                        founder_ceo: "Fondateur et PDG",
-                        john_doe_desc: "Expert en blockchain avec une passion pour l'inclusion financière en Afrique.",
-                        jane_ade: "Jane Ade",
-                        cto: "Directrice Technique",
-                        jane_ade_desc: "Experte en solutions blockchain évolutives pour les marchés africains.",
-                        novarex: "Novarex",
-                        footer_desc: "Pousser la domination de la blockchain de Kadena dans l'avenir financier de l'Afrique.",
-                        platform: "Plateforme",
-                        home: "Accueil",
-                        about: "À propos",
-                        ecosystem: "Écosystème",
-                        resources: "Ressources",
-                        documentation: "Documentation",
-                        whitepaper: "Livre blanc",
-                        language: "Langue",
-                        all_rights_reserved: "Tous droits réservés.",
-                        wallet_failed: "Échec de la connexion au portefeuille.",
-                        install_chainweaver: "Veuillez installer Chainweaver ou MetaMask.",
-                        contact: "Contact",
-                        connect_wallet: "Connecter le Portefeuille",
-                        toggle_theme: "Changer de Thème"
-                    }
-                },
-                id: {
-                    translation: {
-                        hero_title: "Novarex: Kadena untuk Afrika",
-                        hero_subtitle: "Memberdayakan keuangan Afrika dengan blockchain Kadena yang skalabel, menghadirkan solusi DeFi, NFT, dan cross-chain yang aman.",
-                        explore_platform: "Jelajahi Platform",
-                        view_ecosystem: "Lihat Ekosistem",
-                        about_title: "Tentang Novarex",
-                        about_text1: "Novarex dibangun di atas Chainweb Kadena, sebuah blockchain PoW Lapisan 1 dengan 20 rantai paralel, untuk menghadirkan solusi skalabel dan aman bagi ekosistem keuangan Afrika.",
-                        about_text2: "Menggunakan kontrak pintar Pact yang mudah dibaca manusia dan stasiun gas Kadena, kami memungkinkan dApps berbiaya rendah dan ramah pengembang untuk inklusi keuangan di Afrika.",
-                        transactions_sec: "Transaksi/Detik",
-                        uptime: "Waktu Aktif",
-                        total_value_locked: "Total Nilai Terkunci",
-                        partners: "Mitra Afrika",
-                        chainweb_scale: "Skalabilitas Chainweb",
-                        chainweb_scale_desc: "Hingga 480.000 TPS dengan 20 rantai paralel untuk pasar Afrika yang sedang berkembang.",
-                        pact_secure: "Kontrak Pintar Pact",
-                        pact_secure_desc: "Pengkodean aman dan mudah dibaca untuk pengembang Afrika.",
-                        ecosystem_title: "Ekosistem Novarex",
-                        defi_protocol: "DeFi untuk Afrika",
-                        defi_protocol_desc: "Perdagangan dan pinjaman berbiaya rendah dengan stasiun gas Kadena untuk pengguna Afrika.",
-                        nft_marketplace: "Pasar NFT",
-                        nft_marketplace_desc: "Cetak dan perdagangkan NFT yang terinspirasi dari Afrika di jaringan Kadena.",
-                        cross_chain_bridge: "Jembatan Cross-Chain",
-                        cross_chain_bridge_desc: "Hubungkan pasar Afrika dengan blockchain global melalui Kadena.",
-                        team_title: "Temui Visioner Kami",
-                        john_doe: "John Doe",
-                        founder_ceo: "Pendiri & CEO",
-                        john_doe_desc: "Pakar blockchain dengan semangat untuk inklusi keuangan di Afrika.",
-                        jane_ade: "Jane Ade",
-                        cto: "CTO",
-                        jane_ade_desc: "Pakar dalam solusi blockchain skalabel untuk pasar Afrika.",
-                        novarex: "Novarex",
-                        footer_desc: "Mendorong dominasi blockchain Kadena di masa depan keuangan Afrika.",
-                        platform: "Platform",
-                        home: "Beranda",
-                        about: "Tentang",
-                        ecosystem: "Ekosistem",
-                        resources: "Sumber Daya",
-                        documentation: "Dokumentasi",
-                        whitepaper: "Whitepaper",
-                        language: "Bahasa",
-                        all_rights_reserved: "Semua hak dilindungi.",
-                        wallet_failed: "Koneksi dompet gagal.",
-                        install_chainweaver: "Silakan instal Chainweaver atau MetaMask.",
-                        contact: "Kontak",
-                        connect_wallet: "Hubungkan Dompet",
-                        toggle_theme: "Ubah Tema"
-                    }
-                },
-                th: {
-                    translation: {
-                        hero_title: "Novarex: Kadena สำหรับแอฟริกา",
-                        hero_subtitle: "เพิ่มพลังให้การเงินแอฟริกาด้วยบล็อกเชนที่ปรับขนาดได้ของ Kadena มอบโซลูชัน DeFi, NFT และ cross-chain ที่ปลอดภัย",
-                        explore_platform: "สำรวจแพลตฟอร์ม",
-                        view_ecosystem: "ดูระบบนิเวศ",
-                        about_title: "เกี่ยวกับ Novarex",
-                        about_text1: "Novarex สร้างบน Chainweb ของ Kadena ซึ่งเป็นบล็อกเชน PoW ชั้น 1 ที่มี 20 เชนคู่ขนาน เพื่อนำโซลูชันที่ปรับขนาดได้และปลอดภัยมาสู่ระบบนิเวศทางการเงินของแอฟริกา",
-                        about_text2: "โดยใช้สัญญาอัจฉริยะที่อ่านง่ายของ Pact และสถานีน้ำมันของ Kadena เราทำให้ dApps ที่มีต้นทุนต่ำและเป็นมิตรกับนักพัฒนาสามารถใช้งานได้เพื่อการรวมตัวทางการเงินในแอฟริกา",
-                        transactions_sec: "ธุรกรรม/วินาที",
-                        uptime: "เวลาทำงาน",
-                        total_value_locked: "มูลค่ารวมที่ถูกล็อก",
-                        partners: "พันธมิตรแอฟริกา",
-                        chainweb_scale: "ความสามารถในการปรับขนาดของ Chainweb",
-                        chainweb_scale_desc: "สูงสุดถึง 480,000 TPS ด้วย 20 เชนคู่ขนานสำหรับตลาดที่กำลังเติบโตของแอฟริกา",
-                        pact_secure: "สัญญาอัจฉริยะ Pact",
-                        pact_secure_desc: "การเขียนโค้ดที่ปลอดภัยและอ่านง่ายสำหรับนักพัฒนาในแอฟริกา",
-                        ecosystem_title: "ระบบนิเวศ Novarex",
-                        defi_protocol: "DeFi สำหรับแอฟริกา",
-                        defi_protocol_desc: "การซื้อขายและการให้กู้ยืมที่มีต้นทุนต่ำด้วยสถานีน้ำมันของ Kadena สำหรับผู้ใช้ในแอฟริกา",
-                        nft_marketplace: "ตลาด NFT",
-                        nft_marketplace_desc: "สร้างและซื้อขาย NFT ที่ได้แรงบันดาลใจจากแอฟริกาบนเครือข่ายของ Kadena",
-                        cross_chain_bridge: "สะพาน Cross-Chain",
-                        cross_chain_bridge_desc: "เชื่อมต่อตลาดแอฟริกากับบล็อกเชนทั่วโลกผ่าน Kadena",
-                        team_title: "พบกับผู้มีวิสัยทัศน์ของเรา",
-                        john_doe: "John Doe",
-                        founder_ceo: "ผู้ก่อตั้งและซีอีโอ",
-                        john_doe_desc: "ผู้เชี่ยวชาญด้านบล็อกเชนที่มีความหลงใหลในการรวมตัวทางการเงินในแอฟริกา",
-                        jane_ade: "Jane Ade",
-                        cto: "CTO",
-                        jane_ade_desc: "ผู้เชี่ยวชาญด้านโซลูชันบล็อกเชนที่ปรับขนาดได้สำหรับตลาดแอฟริกา",
-                        novarex: "Novarex",
-                        footer_desc: "ขับเคลื่อนการครอบงำบล็อกเชนของ Kadena ในอนาคตทางการเงินของแอฟริกา",
-                        platform: "แพลตฟอร์ม",
-                        home: "หน้าแรก",
-                        about: "เกี่ยวกับ",
-                        ecosystem: "ระบบนิเวศ",
-                        resources: "ทรัพยากร",
-                        documentation: "เอกสาร",
-                        whitepaper: "เอกสารไวท์เปเปอร์",
-                        language: "ภาษา",
-                        all_rights_reserved: "สงวนลิขสิทธิ์",
-                        wallet_failed: "การเชื่อมต่อกระเป๋าเงินล้มเหลว",
-                        install_chainweaver: "กรุณาติดตั้ง Chainweaver หรือ MetaMask",
-                        contact: "ติดต่อ",
-                        connect_wallet: "เชื่อมต่อกระเป๋าเงิน",
-                        toggle_theme: "สลับธีม"
-                    }
-                }
-            }
-        }, () => {
-            updateContent();
-        });
-
-        // Update content based on language
-        function updateContent() {
-            document.querySelectorAll('[data-i18n]').forEach(element => {
-                const key = element.getAttribute('data-i18n');
-                element.textContent = i18next.t(key);
-            });
-        }
-
-        // Language Selector
-        document.getElementById('language-selector').addEventListener('change', (e) => {
-            i18next.changeLanguage(e.target.value, () => {
-                updateContent();
-            });
-        });
-
-        // Chainweb Visualization
-        function initChainwebVisualization() {
-            const container = document.querySelector('.chainweb-visualization');
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({ alpha: true });
-            renderer.setSize(container.clientWidth, container.clientHeight);
-            container.appendChild(renderer.domElement);
-
-            const geometry = new THREE.SphereGeometry(0.1, 32, 32);
-            const material = new THREE.MeshBasicMaterial({ color: 0xff6f61 });
-            const nodes = [];
-
-            // Create 20 nodes for Chainweb's 20 chains
-            for (let i = 0; i < 20; i++) {
-                const node = new THREE.Mesh(geometry, material);
-                node.position.set(
-                    Math.random() * 4 - 2,
-                    Math.random() * 4 - 2,
-                    Math.random() * 4 - 2
-                );
-                scene.add(node);
-                nodes.push(node);
-            }
-
-            // Create edges between nodes
-            const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x6b5b95 });
-            for (let i = 0; i < nodes.length; i++) {
-                for (let j = i + 1; j < nodes.length; j++) {
-                    if (Math.random() > 0.7) {
-                        const geometry = new THREE.BufferGeometry().setFromPoints([
-                            nodes[i].position,
-                            nodes[j].position
-                        ]);
-                        const line = new THREE.Line(geometry, edgeMaterial);
-                        scene.add(line);
-                    }
-                }
-            }
-
-            camera.position.z = 5;
-
-            function animate() {
-                requestAnimationFrame(animate);
-                nodes.forEach(node => {
-                    node.rotation.y += 0.01;
-                });
-                renderer.render(scene, camera);
-            }
-            animate();
-
-            // Resize handler
-            window.addEventListener('resize', () => {
-                camera.aspect = container.clientWidth / container.clientHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(container.clientWidth, container.clientHeight);
-            });
-        }
-
-        // NFT Gallery (Placeholder OpenSea API)
-        async function loadNFTs() {
-            const nftGrid = document.querySelector('.nft-grid');
-            // Mock NFT data (replace with real OpenSea API call)
-            const nfts = [
-                { id: 1, image: 'https://via.placeholder.com/150?text=NFT1' },
-                { id: 2, image: 'https://via.placeholder.com/150?text=NFT2' },
-                { id: 3, image: 'https://via.placeholder.com/150?text=NFT3' },
-                { id: 4, image: 'https://via.placeholder.com/150?text=NFT4' }
-            ];
-
-            nfts.forEach(nft => {
-                const nftCard = document.createElement('div');
-                nftCard.classList.add('nft-card');
-                nftCard.innerHTML = `<img src="${nft.image}" alt="NFT ${nft.id}" loading="lazy">`;
-                nftGrid.appendChild(nftCard);
-            });
-        }
-
-        // Touch Swipe for Ecosystem Cards
-        let touchStartX = 0;
-        let touchEndX = 0;
-        const ecosystemGrid = document.querySelector('.ecosystem-grid');
-
-        ecosystemGrid.addEventListener('touchstart', e => {
-            touchStartX = e.changedTouches[0].screenX;
-        });
-
-        ecosystemGrid.addEventListener('touchend', e => {
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipe();
-        });
-
-        function handleSwipe() {
-            const swipeDistance = touchEndX - touchStartX;
-            if (swipeDistance > 50) {
-                ecosystemGrid.scrollBy({ left: -300, behavior: 'smooth' });
-            } else if (swipeDistance < -50) {
-                ecosystemGrid.scrollBy({ left: 300, behavior: 'smooth' });
-            }
-        }
-
-        // Remove Loading Screen
-        window.addEventListener('load', () => {
-            const loadingScreen = document.querySelector('.loading-screen');
-            loadingScreen.style.opacity = '0';
-            setTimeout(() => {
-                loadingScreen.style.display = 'none';
-            }, 500);
-            initChainwebVisualization();
-            loadNFTs();
         });
     </script>
 </body>
